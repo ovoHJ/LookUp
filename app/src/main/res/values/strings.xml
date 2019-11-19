@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">LookUp</string>
+    <string name="create_room">방 생성</string>
+    <string name="enter_room">방 접속</string>
 </resources>
