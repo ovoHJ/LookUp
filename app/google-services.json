@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "203446462677",
+    "firebase_url": "https://lookup-14537.firebaseio.com",
+    "project_id": "lookup-14537",
+    "storage_bucket": "lookup-14537.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:203446462677:android:8f072971a55dffc4e21a5c",
+        "android_client_info": {
+          "package_name": "kr.hs.emirim.dana.lookup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "203446462677-kdk1fa4i60sf70q6g8tmbpal5cgjtc5v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfPmWBz_pMayX9XgvA12kAU83EoLMdIME"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "203446462677-kdk1fa4i60sf70q6g8tmbpal5cgjtc5v.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
