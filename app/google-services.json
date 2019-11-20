@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "203446462677-6ivadggeemipbi0joqpn8gfa899irs29.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "kr.hs.emirim.dana.lookup",
+            "certificate_hash": "48ba530e96263c66ec0742dfb8ca960c470dfa31"
+          }
+        },
+        {
           "client_id": "203446462677-kdk1fa4i60sf70q6g8tmbpal5cgjtc5v.apps.googleusercontent.com",
           "client_type": 3
         }
