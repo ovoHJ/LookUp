@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextPaint;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -35,7 +36,7 @@ public class RoomActivity extends AppCompatActivity {
 //여기부터 ====================================================================================================
         String[] nameData = {"강은서", "강지민", "강혜정", "원예린"};
         int nDatCnt = 0;
-        ArrayList<ItemData> dnameData = new ArrayList<>();
+        final ArrayList<ItemData> dnameData = new ArrayList<>();
         for (int i=0; i<nameData.length; i++){
             ItemData nameItem = new ItemData();
             nameItem.nameList = (i+1)+". "+nameData[i];
@@ -50,10 +51,10 @@ public class RoomActivity extends AppCompatActivity {
 //여기까지 ====================================================================================================
 
         textView = (TextView) findViewById(R.id.roomPwd);
-        textView.setText("P0W2E3".toUpperCase());
+        textView.setText("241265");
 
         TextPaint paint = textView.getPaint();
-        float width = paint.measureText("P0W2E3");
+        float width = paint.measureText("241265");
 
         Shader textShader = new LinearGradient(0, 0, width, textView.getTextSize(),
                 new int[]{
@@ -61,6 +62,13 @@ public class RoomActivity extends AppCompatActivity {
                         Color.parseColor("#00CDC1"),
                 }, null, Shader.TileMode.CLAMP);
         textView.getPaint().setShader(textShader);
+
+        m_olistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(RoomActivity.this, dnameData.get(i).getNameList(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         findViewById(R.id.floatingBtn).setOnClickListener(floatingBtnClick);
     }
@@ -74,15 +82,15 @@ public class RoomActivity extends AppCompatActivity {
             builder.setPositiveButton(" ", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    Toast.makeText(getApplicationContext(), "Ok click", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(RoomActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
                 }
             });
 
             builder.setNegativeButton(" ", new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    Toast.makeText(getApplicationContext(), "No click", Toast.LENGTH_SHORT).show();
-                }
+                public void onClick(DialogInterface dialogInterface, int i) { }
             });
 
             AlertDialog alertDialog = builder.create();
