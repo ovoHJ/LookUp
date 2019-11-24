@@ -9,17 +9,19 @@ import java.util.Map;
 public class Group {
 
     String name;
+    int personnel;
     int code;
     String timer;
-    Map<String, String> member;
+    Map<String, String> member = new HashMap<>();
 
     public Group(){
         //Default constructor
     }
 
-    public Group(String name, int code, String timer, Map<String, String> member){
+    public Group(String name, int code, int personnel, String timer, Map<String, String> member){
         this.name = name;
         this.code = code;
+        this.personnel = personnel;
         this.timer = timer;
         if (timer == null)
             this.timer = "";
@@ -31,6 +33,7 @@ public class Group {
         HashMap<String, Object> result = new HashMap<>();
         result.put("name", name);
         result.put("code", code);
+        result.put("personnel", personnel);
         result.put("timer", timer);
         result.put("member", member);
 
