@@ -20,9 +20,10 @@ public class CreateActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
 
-    String name;
-    int code;
-    String timer;
+    String name = "lookup_developers";
+    int code = 123458;
+    int personnel = 0;
+    String timer = null;
     String nickname;
     Map<String, String> member = new HashMap();
 
@@ -31,23 +32,23 @@ public class CreateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
 
-        name = "lookup_developers";
-        code = 123458;
-        timer = null;
+        if (nickname == null){
+            nickname = "";
+        }
         member.put(nickname, "owner");
-
         newPost();
     }
 
     public void newPost(){
         mDatabase = FirebaseDatabase.getInstance().getReference();
         String key = mDatabase.child("groups").push().getKey();
-        Group group = new Group(name, code, timer, member);
-        System.out.println(group.name);
-        Map<String, Object> postValues = group.toMap();
 
+        personnel++;
+        Group group = new Group(name, code, personnel, timer, member);
+
+        Map<String, Object> postValues = group.toMap();
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/groups/" + key, postValues);
+        childUpdates.put(key, postValues);
 
         mDatabase.updateChildren(childUpdates);
     }
