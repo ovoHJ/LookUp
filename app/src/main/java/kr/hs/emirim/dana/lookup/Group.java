@@ -2,7 +2,6 @@ package kr.hs.emirim.dana.lookup;
 
 import com.google.firebase.database.Exclude;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,7 +11,7 @@ public class Group {
     int personnel;
     int code;
     String timer;
-    Map<String, String> member = new HashMap<>();
+    Map<String, String> member;
 
     public Group(){
         //Default constructor
