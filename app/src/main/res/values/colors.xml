@@ -5,4 +5,5 @@
     <color name="colorPrimaryDark">#1A1B36</color>
     <color name="colorAccent">#B352FF</color>
     <color name="colorBright">#FFFFFF</color>
+    <color name="Hint">#8700CDC1</color>
 </resources>
