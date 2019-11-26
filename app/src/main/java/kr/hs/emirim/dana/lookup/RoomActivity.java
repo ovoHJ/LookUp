@@ -13,6 +13,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextPaint;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -26,13 +27,19 @@ import java.util.ArrayList;
 public class RoomActivity extends AppCompatActivity {
     private ListView m_olistView = null;    //여기도 ========================================================
     TextView textView;
+    String code;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
 
+        Intent intent = getIntent();
+        code = intent.getExtras().getString("code");
+        Log.d("code", code);
+
 //여기부터 ====================================================================================================
+
         String[] nameData = {"강은서", "강지민", "강혜정", "원예린"};
         int nDatCnt = 0;
         ArrayList<ItemData> dnameData = new ArrayList<>();
