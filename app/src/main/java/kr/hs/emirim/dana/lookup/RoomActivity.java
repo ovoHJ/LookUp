@@ -78,7 +78,6 @@ public class RoomActivity extends AppCompatActivity {
                 Toast.makeText(RoomActivity.this, dnameData.get(i).getNameList(), Toast.LENGTH_SHORT).show();
             }
         });
-//=====================================================================================
 
         rTextView = (TextView) findViewById(R.id.roomPwd);
         rTextView.setText("241265");
@@ -92,6 +91,13 @@ public class RoomActivity extends AppCompatActivity {
                         Color.parseColor("#00CDC1"),
                 }, null, Shader.TileMode.CLAMP);
         rTextView.getPaint().setShader(textShader);
+
+        m_olistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Toast.makeText(RoomActivity.this, dnameData.get(i).getNameList(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         findViewById(R.id.floatingBtn).setOnClickListener(floatingBtnClick);
     }

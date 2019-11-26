@@ -23,6 +23,8 @@ public class EnterActivity extends AppCompatActivity {
         findViewById(R.id.start_bt).setOnClickListener(m_stBtnClick);
     }
 
+
+    // 안녕혜정아 너 지금 뭐해 나 지금 하나 해결했지 뭐야~~
     //sddssddssd
 
     Button.OnClickListener m_stBtnClick = new View.OnClickListener() {

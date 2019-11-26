@@ -5,6 +5,7 @@
         android:type="linear"
         android:startColor="@color/colorPrimaryOne"
         android:endColor="@color/colorPrimaryTwo"/>
+
     <corners
         android:radius="10dp"/>
 
