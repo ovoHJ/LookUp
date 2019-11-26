@@ -18,7 +18,7 @@ public class EnterActivity extends AppCompatActivity {
         EditText input_code = (EditText)findViewById(R.id.input_code);
         EditText input_name = (EditText)findViewById(R.id.input_name);
 
-       // input_code.setText();
+        // input_code.setText();
 
         findViewById(R.id.start_bt).setOnClickListener(m_stBtnClick);
     }

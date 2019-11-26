@@ -1,5 +1,6 @@
 package kr.hs.emirim.dana.lookup;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
@@ -25,16 +26,24 @@ public class CreateActivity extends AppCompatActivity {
 
     private TextView textView_Date;
     private TimePickerDialog.OnTimeSetListener callbackMethod;
-    private DatabaseReference mDatabase;
-    String key = "";
 
-    String name = "lookup_developers";
-    int code = 123459;
+    private DatabaseReference mDatabase;
+    String key;
+
+    String name;
+    String code;
     int personnel = 0;
+
     String timer = null;
     String nickname = "원예린";
     //    위 5줄은 테스트 용
     Map<String, String> member = new HashMap();
+
+    int min = 100000;
+    int max = 999999;
+
+    int result = (int) (Math.random() * (max - min + 1)) + min;
+    String rnd_code = Integer.toString(result);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,16 +72,44 @@ public class CreateActivity extends AppCompatActivity {
         //roomActivity로 넘어가기 (key값 넘기기)
     }
 
+    public void showTimePickerDialog(View v) {
+        DialogFragment newFragment = new TimePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "timePicker");
+    }
+
+    Button.OnClickListener m_crBtnClick = new View.OnClickListener() {
+        public void onClick(View v) {
+            name = room_name.getText().toString();
+            owner = leader_name.getText().toString();
+            if (name != null || owner != null || !name.equals("") || !owner.equals("")) {
+                newPost();
+                Intent intent = new Intent(CreateActivity.this, RoomActivity.class);
+                startActivity(intent);
+
+            }
+        }
+    };
+
+
     public void newPost(){
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference groupRef = mDatabase.child("groups");
         key = mDatabase.child("groups").push().getKey();
-        Group group = new Group(name, code, personnel, timer, member);
+        Log.d("name", name);
+        Log.d("owner", owner);
+        Group group = new Group(name, code, ++personnel, timer, owner);
 
         Map<String, Object> postValues = group.toMap();
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/groups/" + key, postValues);
+        for (String mapkey : postValues.keySet()){
+            System.out.println("key:"+mapkey+",value:"+postValues.get(mapkey));
+        }
 
-        mDatabase.updateChildren(childUpdates);
+        Map<String, Object> childUpdates = new HashMap<>();
+        Log.d("잘못된 경로", key);
+        childUpdates.put(key, postValues);
+        System.out.println("key : " + key + ", value : " + childUpdates.get(key));
+
+        groupRef.updateChildren(childUpdates);
     }
 
 //    public void removeGroup(){
@@ -121,4 +158,22 @@ class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTi
     }
 
 
+}
+
+class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+        final Calendar c = Calendar.getInstance();
+        int hour = c.get(Calendar.HOUR_OF_DAY);
+        int minute = c.get(Calendar.MINUTE);
+
+        return new TimePickerDialog(getActivity(), this, hour, minute,
+                DateFormat.is24HourFormat(getActivity()));
+    }
+
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+    }
 }

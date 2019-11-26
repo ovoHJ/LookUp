@@ -9,22 +9,31 @@ public class Group {
 
     String name;
     int personnel;
-    int code;
+    String code;
     String timer;
-    Map<String, String> member;
+    String owner;
+    Map<String, String> member = new HashMap<>();
 
     public Group(){
         //Default constructor
     }
 
-    public Group(String name, int code, int personnel, String timer, Map<String, String> member){
+    public Group(String name, String code, int personnel, String timer, String owner){
+
+        if (name == null)
+            this.name = "";
         this.name = name;
         this.code = code;
         this.personnel = personnel;
         this.timer = timer;
         if (timer == null)
             this.timer = "";
-        this.member = member;
+        this.owner = owner;
+        System.out.println(name);
+        System.out.println(code);
+        this.member.put(this.owner, "owner");
+
+        System.out.println(name + " " + code + " " + personnel + " " + timer + " " + member);
     }
 
     @Exclude
