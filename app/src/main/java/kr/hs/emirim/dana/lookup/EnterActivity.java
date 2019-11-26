@@ -29,7 +29,7 @@ public class EnterActivity extends AppCompatActivity {
 
     Button.OnClickListener m_stBtnClick = new View.OnClickListener() {
         public void onClick(View v) {
-            Intent intent = new Intent(EnterActivity.this, RoomActivity.class); //강은서 방접속한 후 들어가는 엑티비티 명 넣으셈.
+            Intent intent = new Intent(EnterActivity.this, EnterActivity.class); //강은서 방접속한 후 들어가는 엑티비티 명 넣으셈.
             startActivity(intent);
         }
     };
