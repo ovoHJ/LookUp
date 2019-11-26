@@ -34,6 +34,7 @@ public class CreateActivity extends AppCompatActivity {
     Button create_bt;
 
     private DatabaseReference mDatabase;
+    DatabaseReference groupRef;
     String key;
 
     String name;
@@ -79,8 +80,9 @@ public class CreateActivity extends AppCompatActivity {
             name = room_name.getText().toString();
             owner = leader_name.getText().toString();
             if (name != null || owner != null || !name.equals("") || !owner.equals("")) {
-                newPost();
+                newGroupPost();
                 Intent intent = new Intent(CreateActivity.this, RoomActivity.class);
+                intent.putExtra("code", code);
                 startActivity(intent);
 
             }
@@ -88,23 +90,14 @@ public class CreateActivity extends AppCompatActivity {
     };
 
 
-    public void newPost(){
+    public void newGroupPost(){
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference groupRef = mDatabase.child("groups");
-        key = mDatabase.child("groups").push().getKey();
-        Log.d("name", name);
-        Log.d("owner", owner);
-        Group group = new Group(name, code, ++personnel, timer, owner);
+        groupRef = mDatabase.child("groups");
+        Group group = new Group(name, ++personnel, timer, owner);
 
         Map<String, Object> postValues = group.toMap();
-        for (String mapkey : postValues.keySet()){
-            System.out.println("key:"+mapkey+",value:"+postValues.get(mapkey));
-        }
-
         Map<String, Object> childUpdates = new HashMap<>();
-        Log.d("잘못된 경로", key);
-        childUpdates.put(key, postValues);
-        System.out.println("key : " + key + ", value : " + childUpdates.get(key));
+        childUpdates.put(code, postValues);
 
         groupRef.updateChildren(childUpdates);
     }

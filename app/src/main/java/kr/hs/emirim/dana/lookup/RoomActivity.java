@@ -43,11 +43,15 @@ public class RoomActivity extends AppCompatActivity {
     List<ItemData> rArray = new ArrayList<ItemData>();
 
     TextView rTextView;
+    String code;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
+
+        Intent intent = getIntent();
+        code = intent.getExtras().getString("code");
 
         rListView = (ListView)findViewById(R.id.nameList);
 
