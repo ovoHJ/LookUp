@@ -10,8 +10,10 @@ package kr.hs.emirim.dana.lookup;
         import android.text.format.DateFormat;
         import android.util.Log;
         import android.view.View;
+        import android.widget.ArrayAdapter;
         import android.widget.Button;
         import android.widget.EditText;
+        import android.widget.Spinner;
         import android.widget.TextView;
         import android.widget.TimePicker;
 
@@ -29,8 +31,8 @@ public class CreateActivity extends AppCompatActivity {
     TextView random_number;
     EditText room_name;
     EditText leader_name;
-    Button hour_input;
-    Button minute_input;
+    EditText hour_input;
+    EditText minute_input;
     Button create_bt;
 
     private DatabaseReference mDatabase;
@@ -54,25 +56,76 @@ public class CreateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
 
-//        random_number = (TextView)findViewById(R.id.random_number);
-//        room_name = (EditText)findViewById(R.id.room_name);
-//        leader_name = (EditText)findViewById(R.id.leader_name);
-//        hour_input = (Button)findViewById(R.id.hour_input);
-//        minute_input = (Button)findViewById(R.id.minute_input);
-//        create_bt = (Button)findViewById(R.id.create_bt);
-        create_bt.setOnClickListener(m_crBtnClick);
+        Spinner spinner = (Spinner)findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.종료설정, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item); spinner.setAdapter(adapter);
 
-        random_number.setText(rnd_code);
-        code = rnd_code;
 
-        //hour_input.setText(hour);
-        //minute_input.setText(minute);
+         random_number = (TextView)findViewById(R.id.random_number);
+         room_name = (EditText)findViewById(R.id.room_name);
+         leader_name = (EditText)findViewById(R.id.leader_name);
+
+         hour_input = (EditText)findViewById(R.id.hour_input);
+         minute_input = (EditText)findViewById(R.id.minute_input);
+
+         create_bt = (Button)findViewById(R.id.create_bt);
+         create_bt.setOnClickListener(m_crBtnClick);
+
+         random_number.setText(rnd_code);
+         code = rnd_code;
+
+
+        final EditText hour_input = (EditText) findViewById(R.id.hour_input);
+        final EditText minute_input = (EditText) findViewById(R.id.minute_input);
+
+        hour_input.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+
+                mTimePicker = new TimePickerDialog(CreateActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        hour_input.setText(selectedHour);
+                    }
+                }, hour, minute, false); // true의 경우 24시간 형식의 TimePicker
+               // mTimePicker.setTitle("Select Time");
+                mTimePicker.show();
+            }
+        });
+
+        minute_input.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+
+                mTimePicker = new TimePickerDialog(CreateActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        minute_input.setText(selectedMinute);
+                    }
+                }, hour, minute, false); // true의 경우 24시간 형식의 TimePicker
+               // mTimePicker.setTitle("Select Minute");
+                mTimePicker.show();
+            }
+        });
+
     }
+
+
+
 
     public void showTimePickerDialog(View v) {
         DialogFragment newFragment = new TimePickerFragment();
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
+
 
     Button.OnClickListener m_crBtnClick = new View.OnClickListener() {
         public void onClick(View v) {
