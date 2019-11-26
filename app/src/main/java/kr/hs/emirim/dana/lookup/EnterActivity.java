@@ -23,10 +23,6 @@ public class EnterActivity extends AppCompatActivity {
         findViewById(R.id.start_bt).setOnClickListener(m_stBtnClick);
     }
 
-
-    // 안녕혜정아 너 지금 뭐해 나 지금 하나 해결했지 뭐야~~
-    //sddssddssd
-
     Button.OnClickListener m_stBtnClick = new View.OnClickListener() {
         public void onClick(View v) {
             Intent intent = new Intent(EnterActivity.this, EnterActivity.class); //강은서 방접속한 후 들어가는 엑티비티 명 넣으셈.
