@@ -15,6 +15,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextPaint;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -29,21 +30,25 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.w3c.dom.Comment;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RoomActivity extends AppCompatActivity {
-    private FirebaseDatabase rFirebaseDatabase;
-    private DatabaseReference rDatabaseReference;
-    private ChildEventListener rChildEventListener;
 
     private ListView rListView;
     List<ItemData> rArray = new ArrayList<ItemData>();
-
     TextView rTextView;
+
+    private DatabaseReference mDatabase;
+    DatabaseReference groupRef;
+    ChildEventListener childEventListener;
+
     String code;
+    String name;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +57,10 @@ public class RoomActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         code = intent.getExtras().getString("code");
+        name = intent.getExtras().getString("name");
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        groupRef = mDatabase.child("groups").child(code);
         rListView = (ListView)findViewById(R.id.nameList);
 
 //=====================================================================================
@@ -65,8 +73,6 @@ public class RoomActivity extends AppCompatActivity {
             dnameData.add(nameItem);
         }
 //=====================================================================================
-
-//        initDatabase();
 
         ListAdapter rAdapter = new ListAdapter(dnameData);
         rListView.setAdapter(rAdapter);
@@ -82,12 +88,13 @@ public class RoomActivity extends AppCompatActivity {
                 Toast.makeText(RoomActivity.this, dnameData.get(i).getNameList(), Toast.LENGTH_SHORT).show();
             }
         });
+//=====================================================================================
 
         rTextView = (TextView) findViewById(R.id.roomPwd);
-        rTextView.setText("241265");
+        rTextView.setText(code);
 
         TextPaint paint = rTextView.getPaint();
-        float width = paint.measureText("241265");
+        float width = paint.measureText(code);
 
         Shader textShader = new LinearGradient(0, 0, width, rTextView.getTextSize(),
                 new int[]{
@@ -96,51 +103,8 @@ public class RoomActivity extends AppCompatActivity {
                 }, null, Shader.TileMode.CLAMP);
         rTextView.getPaint().setShader(textShader);
 
-        m_olistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(RoomActivity.this, dnameData.get(i).getNameList(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
         findViewById(R.id.floatingBtn).setOnClickListener(floatingBtnClick);
     }
-
-//    private void initDatabase(){
-//        rChildEventListener = new ChildEventListener(){
-//            @Override
-//            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//            }
-//
-//            @Override
-//            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//            }
-//
-//            @Override
-//            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-//
-//            }
-//
-//            @Override
-//            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        };
-//        rDatabaseReference.addChildEventListener(rChildEventListener);
-//    }
-//
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        rDatabaseReference.removeEventListener(rChildEventListener);
-//    }
 
     Button.OnClickListener floatingBtnClick = new View.OnClickListener() {
         @Override
@@ -151,7 +115,10 @@ public class RoomActivity extends AppCompatActivity {
             builder.setPositiveButton(" ", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
+                    groupRef.child("member").child(name).removeValue();
                     Intent intent = new Intent(RoomActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 액티비티 스택에 쌓인 액티비티 제거
+                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); //
                     startActivity(intent);
                     finish();
                 }
@@ -177,5 +144,41 @@ public class RoomActivity extends AppCompatActivity {
             no.setCompoundDrawables(img2, null, null, null);
         }
     };
+
+    public void showList(){
+        childEventListener = new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                Group group = dataSnapshot.getValue(Group.class);
+                Log.d("member", group.name);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        groupRef.addChildEventListener(childEventListener);
+    }
+
+    public void removeGroup(){
+        groupRef.removeValue();
+        Log.d("remove test", "this is successed too");
+    }
 
 }
