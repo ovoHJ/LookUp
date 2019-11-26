@@ -7,8 +7,6 @@
     android:background="@color/colorPrimaryDark"
     tools:context=".EnterActivity">
 
-
-
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
@@ -108,7 +106,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="162dp"
-        app:layout_constraintEnd_toStartOf="@+id/room_name"
+
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3"
         app:srcCompat="@drawable/rectangle8" />

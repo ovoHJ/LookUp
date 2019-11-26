@@ -7,5 +7,4 @@
         android:endColor="@color/colorPrimaryTwo"/>
     <corners
         android:radius="10dp"/>
-
 </shape>
