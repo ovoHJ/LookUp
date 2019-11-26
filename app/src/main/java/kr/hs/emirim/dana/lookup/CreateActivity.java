@@ -8,7 +8,6 @@ package kr.hs.emirim.dana.lookup;
         import android.content.Intent;
         import android.os.Bundle;
         import android.text.format.DateFormat;
-        import android.util.Log;
         import android.view.View;
         import android.widget.Button;
         import android.widget.EditText;
