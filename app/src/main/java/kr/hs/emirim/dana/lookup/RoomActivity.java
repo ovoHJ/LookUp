@@ -96,13 +96,6 @@ public class RoomActivity extends AppCompatActivity {
                 }, null, Shader.TileMode.CLAMP);
         rTextView.getPaint().setShader(textShader);
 
-        m_olistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Toast.makeText(RoomActivity.this, dnameData.get(i).getNameList(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
         findViewById(R.id.floatingBtn).setOnClickListener(floatingBtnClick);
     }
 
