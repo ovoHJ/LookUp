@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -56,6 +55,7 @@ public class EnterActivity extends AppCompatActivity {
         public void onClick(View v) {
             enterRoom();
             Intent intent = new Intent(EnterActivity.this, RoomActivity.class); //강은서 방접속한 후 들어가는 엑티비티 명 넣으셈.
+            intent.putExtra("code", code);
             startActivity(intent);
         }
     };
