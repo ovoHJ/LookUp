@@ -89,7 +89,7 @@
         android:id="@+id/create_bt"
         android:layout_width="241dp"
         android:layout_height="46dp"
-        android:layout_marginTop="580dp"
+        android:layout_marginTop="572dp"
         android:background="@drawable/bg_gradient"
         android:fontFamily="@font/roboto_bold"
         android:text="@string/create_room"
@@ -97,6 +97,7 @@
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.464"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -115,7 +116,7 @@
         app:layout_constraintStart_toEndOf="@+id/hour_input"
         app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
-    <Button
+    <EditText
         android:id="@+id/minute_input"
         android:layout_width="52dp"
         android:layout_height="52dp"
@@ -124,7 +125,6 @@
         android:layout_marginEnd="5dp"
         android:background="@drawable/rounded"
         android:padding="10dp"
-        android:hint="00"
         android:textColor="#797979"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/minute"
@@ -147,7 +147,7 @@
         app:layout_constraintStart_toEndOf="@+id/minute_input"
         app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
-    <Button
+    <EditText
         android:id="@+id/hour_input"
         android:layout_width="52dp"
         android:layout_height="52dp"
@@ -156,7 +156,6 @@
         android:layout_marginEnd="14dp"
         android:background="@drawable/rounded"
         android:padding="10dp"
-        android:hint="00"
         android:textColor="#797979"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/hour_"
@@ -199,7 +198,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="162dp"
-        app:layout_constraintEnd_toStartOf="@+id/room_name"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3"
         app:srcCompat="@drawable/rectangle8" />

@@ -39,18 +39,6 @@ public class EnterActivity extends AppCompatActivity {
         findViewById(R.id.start_bt).setOnClickListener(m_stBtnClick);
     }
 
-    //enter room and add member
-    public void enterRoom(){
-        code = input_code.getText().toString();
-        name = input_name.getText().toString();
-
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        groupRef = mDatabase.child("groups").child(code).child("member");
-
-        addMember.put(name, "user");
-        groupRef.updateChildren(addMember);
-    }//해당 코드가 DB 내에 있을 경우, 해당 코드의 데이터 키값을 받아서 member에 name : "user"형태로 추가
-
     Button.OnClickListener m_stBtnClick = new View.OnClickListener() {
         public void onClick(View v) {
             enterRoom();

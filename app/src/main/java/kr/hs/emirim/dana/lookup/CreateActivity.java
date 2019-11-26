@@ -8,6 +8,7 @@ package kr.hs.emirim.dana.lookup;
         import android.content.Intent;
         import android.os.Bundle;
         import android.text.format.DateFormat;
+        import android.util.Log;
         import android.view.View;
         import android.widget.Button;
         import android.widget.EditText;
@@ -54,12 +55,12 @@ public class CreateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
 
-        random_number = (TextView)findViewById(R.id.random_number);
-        room_name = (EditText)findViewById(R.id.room_name);
-        leader_name = (EditText)findViewById(R.id.leader_name);
-        hour_input = (Button)findViewById(R.id.hour_input);
-        minute_input = (Button)findViewById(R.id.minute_input);
-        create_bt = (Button)findViewById(R.id.create_bt);
+//        random_number = (TextView)findViewById(R.id.random_number);
+//        room_name = (EditText)findViewById(R.id.room_name);
+//        leader_name = (EditText)findViewById(R.id.leader_name);
+//        hour_input = (Button)findViewById(R.id.hour_input);
+//        minute_input = (Button)findViewById(R.id.minute_input);
+//        create_bt = (Button)findViewById(R.id.create_bt);
         create_bt.setOnClickListener(m_crBtnClick);
 
         random_number.setText(rnd_code);
