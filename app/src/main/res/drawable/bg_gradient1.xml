@@ -5,7 +5,10 @@
         android:type="linear"
         android:startColor="@color/colorPrimaryOne"
         android:endColor="@color/colorPrimaryTwo"/>
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
     <corners
         android:radius="10dp"/>
 
