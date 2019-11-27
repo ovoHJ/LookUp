@@ -10,9 +10,12 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,12 +24,15 @@ public class EnterActivity extends AppCompatActivity {
     EditText input_code;
     EditText input_name;
 
-    private DatabaseReference mDatabase;
+    private DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+    DatabaseReference groupRef = mDatabase.child("groups");
     DatabaseReference memberRef;
 
     String code;
     String name;
     Map<String, Object> addMember = new HashMap<>();
+    ArrayList<String> keyValue = new ArrayList<>();
+    ArrayList<String> memberValue = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,33 +41,86 @@ public class EnterActivity extends AppCompatActivity {
 
         input_code = (EditText)findViewById(R.id.input_code);
         input_name = (EditText)findViewById(R.id.input_name);
-
-        // input_code.setText();
-
         findViewById(R.id.start_bt).setOnClickListener(m_stBtnClick);
+
+
     }
 
     //enter room and add member
     public void enterRoom(){
-        code = input_code.getText().toString();
-        name = input_name.getText().toString();
-
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        memberRef = mDatabase.child("groups").child(code).child("member");
+        memberRef = groupRef.child(code).child("member");
 
         addMember.put(name, "user");
         memberRef.updateChildren(addMember);
+
     }//해당 코드가 DB 내에 있을 경우, 해당 코드의 데이터 키값을 받아서 member에 name : "user"형태로 추가
 
 
     Button.OnClickListener m_stBtnClick = new View.OnClickListener() {
         public void onClick(View v) {
-            enterRoom();
-            Intent intent = new Intent(EnterActivity.this, RoomActivity.class); //강은서 방접속한 후 들어가는 엑티비티 명 넣으셈.
-            intent.putExtra("code", code);
-            intent.putExtra("name", name);
-            startActivity(intent);
+            code = input_code.getText().toString();
+            name = input_name.getText().toString();
+            selectData(new MyCallback() {
+                @Override
+                public void onCallback(ArrayList<String> keyValue, ArrayList<String> memberValue) {
+                    System.out.println(memberValue);
+                    for (String codename: keyValue) {
+                        if (code.equals(codename) && !(code.equals(""))) {
+                            for(String membername : memberValue){
+                                System.out.println(name);
+                                System.out.println(membername);
+                                if(!(memberValue.contains(name)) && !(name.equals(""))){
+                                    System.out.println(!(name.equals(membername)));
+                                    System.out.println(!(name.equals("")));
+                                    enterRoom();
+                                    Intent intent = new Intent(EnterActivity.this, RoomActivity.class); //강은서 방접속한 후 들어가는 엑티비티 명 넣으셈.
+                                    intent.putExtra("code", code);
+                                    intent.putExtra("name", name);
+                                    startActivity(intent);
+                                    break;
+                                } else {
+                                    Log.d("tag", "3");
+                                    input_name.setText("");
+                                    input_name.setHint("중복되지 않은 닉네임을 입력하세요");
+                                    break;
+                                }
+
+                            }
+                        } else {
+                            input_code.setText("");
+                            input_code.setHint("올바른 코드를 입력하세요");
+                        }
+                    }
+                }
+            });
         }
     };
 
+    public void selectData(final MyCallback myCallback) {
+        groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds: dataSnapshot.getChildren()) {
+                    String codename = ds.getKey();
+                    Map<String, Object> membernames = (HashMap<String, Object>)ds.getValue();
+                    Map<String, Object> members = (HashMap<String, Object>) membernames.get("member");
+                    keyValue.add(codename);
+                    for(String membersKey : members.keySet()){
+                        memberValue.add(membersKey);
+                    }
+                }
+                myCallback.onCallback(keyValue, memberValue);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
+    }
+
+    public interface MyCallback {
+        void onCallback(ArrayList<String> keyValue, ArrayList<String> memberValue);
+    }
+
 }
+
+
