@@ -62,36 +62,24 @@ public class EnterActivity extends AppCompatActivity {
             name = input_name.getText().toString();
             selectData(new MyCallback() {
                 @Override
-                public void onCallback(ArrayList<String> keyValue, ArrayList<String> memberValue) {
+                public void onCallback(ArrayList<String> keyValue, ArrayList<String> memberValue) { ;
                     System.out.println(memberValue);
-                    for (String codename: keyValue) {
-                        if (code.equals(codename) && !(code.equals(""))) {
-                            for(String membername : memberValue){
-                                System.out.println(name);
-                                System.out.println(membername);
-                                if(!(memberValue.contains(name)) && !(name.equals(""))){
-                                    System.out.println(!(name.equals(membername)));
-                                    System.out.println(!(name.equals("")));
-                                    enterRoom();
-                                    Intent intent = new Intent(EnterActivity.this, RoomActivity.class); //강은서 방접속한 후 들어가는 엑티비티 명 넣으셈.
-                                    intent.putExtra("code", code);
-                                    intent.putExtra("name", name);
-                                    startActivity(intent);
-                                    break;
-                                } else {
-                                    Log.d("tag", "3");
-                                    input_name.setText("");
-                                    input_name.setHint("중복되지 않은 닉네임을 입력하세요");
-                                    break;
-                                }
-
+                        if (keyValue.contains(code) && !(code.equals(""))) {
+                            if(!(memberValue.contains(name)) && !(name.equals(""))){
+                                enterRoom();
+                                Intent intent = new Intent(EnterActivity.this, RoomActivity.class); //강은서 방접속한 후 들어가는 엑티비티 명 넣으셈.
+                                intent.putExtra("code", code);
+                                intent.putExtra("name", name);
+                                startActivity(intent);
+                            } else {
+                                input_name.setText("");
+                                input_name.setHint("중복되지 않은 닉네임을 입력하세요");
                             }
                         } else {
                             input_code.setText("");
                             input_code.setHint("올바른 코드를 입력하세요");
                         }
                     }
-                }
             });
         }
     };
@@ -105,8 +93,10 @@ public class EnterActivity extends AppCompatActivity {
                     Map<String, Object> membernames = (HashMap<String, Object>)ds.getValue();
                     Map<String, Object> members = (HashMap<String, Object>) membernames.get("member");
                     keyValue.add(codename);
-                    for(String membersKey : members.keySet()){
-                        memberValue.add(membersKey);
+                    if(code.equals(codename)){
+                        for(String membersKey : members.keySet()){
+                            memberValue.add(membersKey);
+                        }
                     }
                 }
                 myCallback.onCallback(keyValue, memberValue);
