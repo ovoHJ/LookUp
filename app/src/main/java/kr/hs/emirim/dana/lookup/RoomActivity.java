@@ -58,6 +58,7 @@ public class RoomActivity extends AppCompatActivity {
         Intent intent = getIntent();
         code = intent.getExtras().getString("code");
         name = intent.getExtras().getString("name");
+        System.out.println(code + ", " + name);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         groupRef = mDatabase.child("groups").child(code);
@@ -115,7 +116,7 @@ public class RoomActivity extends AppCompatActivity {
             builder.setPositiveButton(" ", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    groupRef.child("member").child(name).removeValue();
+                    groupRef.removeValue();
                     Intent intent = new Intent(RoomActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 액티비티 스택에 쌓인 액티비티 제거
                     intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); //
