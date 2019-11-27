@@ -117,6 +117,8 @@
 
     <EditText
         android:id="@+id/minute_input"
+        android:digits="0123456789"
+        android:inputType="number"
         android:layout_width="52dp"
         android:layout_height="52dp"
         android:layout_marginStart="3dp"
@@ -148,6 +150,8 @@
 
     <EditText
         android:id="@+id/hour_input"
+        android:digits="0123456789"
+        android:inputType="number"
         android:layout_width="52dp"
         android:layout_height="52dp"
         android:layout_marginStart="108dp"
