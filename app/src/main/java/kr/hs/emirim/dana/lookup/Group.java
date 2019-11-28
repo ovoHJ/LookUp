@@ -10,7 +10,7 @@ public class Group {
     String name;
     String timer;
     String owner;
-    Map<String, String> member = new HashMap<>();
+    Map<String, Object> member = new HashMap<>();
 
     public Group(){
         //Default constructor

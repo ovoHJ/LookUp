@@ -82,6 +82,7 @@ public class CreateActivity extends AppCompatActivity {
                     Intent intent = new Intent(CreateActivity.this, RoomActivity.class);
                     intent.putExtra("code", code);
                     intent.putExtra("name", owner);
+                    intent.putExtra("roomName", name);
                     startActivity(intent);
 
                 }

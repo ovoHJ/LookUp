@@ -52,6 +52,7 @@ public class RoomActivity extends AppCompatActivity {
     String code;
     String name;
     String own;
+    String roomName;
     Map<String, Object> memberList = new HashMap<>();
     ArrayList<String> namedata = new ArrayList<>();
 
@@ -64,6 +65,7 @@ public class RoomActivity extends AppCompatActivity {
         Intent intent = getIntent();
         code = intent.getExtras().getString("code");
         name = intent.getExtras().getString("name");
+        roomName = intent.getExtras().getString("roomName");
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         groupRef = mDatabase.child("groups").child(code).child("member");
@@ -72,7 +74,7 @@ public class RoomActivity extends AppCompatActivity {
         roomPwdView = (TextView) findViewById(R.id.roomPwd);
         roomPwdView.setText(code);
         roomNameView = (TextView) findViewById(R.id.roomName);
-        roomNameView.setText(name);
+        roomNameView.setText(roomName);
 
         TextPaint paint = roomPwdView.getPaint();
         float width = paint.measureText(code);
@@ -108,22 +110,22 @@ public class RoomActivity extends AppCompatActivity {
                             dnameData.add(nameItem);
                         }
 
-                        ListAdapter rAdapter = new ListAdapter(dnameData);
+                        final ListAdapter rAdapter = new ListAdapter(dnameData);
                         rListView.setAdapter(rAdapter);
-
-                        rArray.add(new ItemData());
 
                         roomCntView = (TextView) findViewById(R.id.connectionCount);
                         roomCntView.setText(rAdapter.getCount()+"명");
 
                         rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
-                            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                                String selected_item = (String)adapterView.getItemAtPosition(position);
-                                System.out.println(selected_item);
-                                if(name.equals(selected_item)){
-                                    outOfRoom();
-                                }
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                System.out.println(i);
+                                System.out.println(rListView.getSelectedItem());
+
+//                                System.out.println(selected_item);
+//                                if(name.equals(selected_item)){
+//                                    outOfRoom();
+//                                }
                             }
                         });
 //=====================================================================================
@@ -189,7 +191,8 @@ public class RoomActivity extends AppCompatActivity {
         groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                    Map<String, Object> membernames = (HashMap<String, Object>)dataSnapshot.getValue();
+                    System.out.println(dataSnapshot.getValue());
+                    Map<String, Object> membernames = (Map<String, Object>)dataSnapshot.getValue();
                     for(String membersKey : membernames.keySet()){
                         memberList.put(membersKey, membernames.get(membersKey));
                     }
