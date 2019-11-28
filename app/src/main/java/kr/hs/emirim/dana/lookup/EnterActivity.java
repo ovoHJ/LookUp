@@ -91,6 +91,7 @@ public class EnterActivity extends AppCompatActivity {
                 for (DataSnapshot ds: dataSnapshot.getChildren()) {
                     String codename = ds.getKey();
                     Map<String, Object> membernames = (HashMap<String, Object>)ds.getValue();
+                    System.out.println(membernames);
                     Map<String, Object> members = (HashMap<String, Object>) membernames.get("member");
                     keyValue.add(codename);
                     if(code.equals(codename)){
