@@ -29,8 +29,8 @@ public class CreateActivity extends AppCompatActivity {
     TextView random_number;
     EditText room_name;
     EditText leader_name;
-    EditText hour_input;
-    EditText minute_input;
+    Button hour_input;
+    Button minute_input;
     Button create_bt;
 
     private DatabaseReference mDatabase;
@@ -57,8 +57,20 @@ public class CreateActivity extends AppCompatActivity {
         random_number = (TextView)findViewById(R.id.random_number);
         room_name = (EditText)findViewById(R.id.room_name);
         leader_name = (EditText)findViewById(R.id.leader_name);
-        hour_input = (EditText)findViewById(R.id.hour_input);
-        minute_input = (EditText)findViewById(R.id.minute_input);
+        hour_input = (Button)findViewById(R.id.hour_input);
+        hour_input.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        minute_input = (Button)findViewById(R.id.minute_input);
+        minute_input.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         create_bt = (Button)findViewById(R.id.create_bt);
         create_bt.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -69,7 +81,8 @@ public class CreateActivity extends AppCompatActivity {
                     newGroupPost();
                     Intent intent = new Intent(CreateActivity.this, RoomActivity.class);
                     intent.putExtra("code", code);
-                    intent.putExtra("name", name);
+                    intent.putExtra("name", owner);
+                    intent.putExtra("roomName", name);
                     startActivity(intent);
 
                 }
