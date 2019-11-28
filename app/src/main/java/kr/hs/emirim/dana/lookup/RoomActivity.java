@@ -146,7 +146,7 @@ public class RoomActivity extends AppCompatActivity {
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 memberList.put(dataSnapshot.getKey(), dataSnapshot.getValue());
 
-                if(memberList.containsValue("owner")){
+                if(!(memberList.containsValue("owner"))){
                     Intent intent = new Intent(RoomActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 액티비티 스택에 쌓인 액티비티 제거
                     intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); //
