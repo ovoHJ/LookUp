@@ -121,7 +121,7 @@ public class RoomActivity extends AppCompatActivity {
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                 String list = (String)namedata.get(i);
                                 if(name.equals(list)){
-                                    outOfRoom();
+                                    showDialog();
                                 }
                             }
                         });
@@ -140,27 +140,18 @@ public class RoomActivity extends AppCompatActivity {
     Button.OnClickListener floatingBtnClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            outOfRoom();
+            showDialog();
         }
     };
 
-    public void outOfRoom(){
+    public void showDialog(){
         builder = new AlertDialog.Builder(RoomActivity.this, R.style.customDialog);
         builder.setTitle("방을 나가시겠습니까?");
 
         builder.setPositiveButton(" ", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if(own.equals("owner")) {
-                    groupRef.getParent().removeValue();
-                } else {
-                    groupRef.child("member").child(name).removeValue();
-                }
-                Intent intent = new Intent(RoomActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 액티비티 스택에 쌓인 액티비티 제거
-                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); //
-                startActivity(intent);
-                finish();
+                outOfRoom();
             }
         });
 
@@ -182,6 +173,19 @@ public class RoomActivity extends AppCompatActivity {
         Drawable img2 = ContextCompat.getDrawable(RoomActivity.this,R.drawable.exit);
         img2.setBounds(0, 0, 70, 70);
         no.setCompoundDrawables(img2, null, null, null);
+    }
+
+    public void outOfRoom(){
+        if(own.equals("owner")) {
+            groupRef.getParent().removeValue();
+        } else {
+            groupRef.child(name).removeValue();
+        }
+        Intent intent = new Intent(RoomActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 액티비티 스택에 쌓인 액티비티 제거
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); //
+        startActivity(intent);
+        finish();
     }
 
     public void showList(final RoomActivity.MyCallback myCallback) {
