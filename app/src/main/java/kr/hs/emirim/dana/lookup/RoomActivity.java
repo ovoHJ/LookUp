@@ -47,6 +47,7 @@ public class RoomActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
     DatabaseReference groupRef;
+    DatabaseReference memberRef;
     AlertDialog.Builder builder;
 
     String code;
@@ -54,7 +55,6 @@ public class RoomActivity extends AppCompatActivity {
     String own;
     String roomName;
     Map<String, Object> memberList = new HashMap<>();
-    ArrayList<String> namedata = new ArrayList<>();
 
 
     @Override
@@ -68,7 +68,8 @@ public class RoomActivity extends AppCompatActivity {
         roomName = intent.getExtras().getString("roomName");
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        groupRef = mDatabase.child("groups").child(code).child("member");
+        groupRef = mDatabase.child("groups").child(code);
+        memberRef = groupRef.child("member");
         rListView = (ListView)findViewById(R.id.nameList);
 
         roomPwdView = (TextView) findViewById(R.id.roomPwd);
@@ -88,12 +89,62 @@ public class RoomActivity extends AppCompatActivity {
 
         findViewById(R.id.floatingBtn).setOnClickListener(floatingBtnClick);
 
-        groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        memberRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 showList(new RoomActivity.MyCallback() {
                     @Override
                     public void onCallback(Map<String, Object> List) {
+                        final ArrayList<String> namedata = new ArrayList<>();
+                        memberList = (Map<String, Object>)List;
+                        for (String key: memberList.keySet()) {
+                            namedata.add(key);
+                            if(key.equals(name)){
+                                own = memberList.get(key).toString();
+                            }
+                        }
+                        System.out.println("namedata : " + namedata);
+                        int nDatCnt = 0;
+                        final ArrayList<ItemData> dnameData = new ArrayList<>();
+
+                        for (int i=0; i< namedata.size(); i++){
+                            ItemData nameItem = new ItemData();
+                            nameItem.nameList = namedata.get(i);
+                            dnameData.add(nameItem);
+                        }
+                        System.out.println("dnameData : " + dnameData);
+
+                        final ListAdapter rAdapter = new ListAdapter(dnameData);
+                        rListView.setAdapter(rAdapter);
+
+                        roomCntView = (TextView) findViewById(R.id.connectionCount);
+                        roomCntView.setText(rAdapter.getCount()+"명");
+
+                        rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                String list = (String)namedata.get(i);
+                                if(name.equals(list)){
+                                    showDialog();
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                showList(new RoomActivity.MyCallback() {
+                    @Override
+                    public void onCallback(Map<String, Object> List) {
+                        final ArrayList<String> namedata = new ArrayList<>();
                         memberList = (Map<String, Object>)List;
                         for (String key: memberList.keySet()) {
                             namedata.add(key);
@@ -103,7 +154,7 @@ public class RoomActivity extends AppCompatActivity {
                         }
                         int nDatCnt = 0;
                         final ArrayList<ItemData> dnameData = new ArrayList<>();
-
+                        System.out.println("namedata : "+ namedata.toString());
                         for (int i=0; i< namedata.size(); i++){
                             ItemData nameItem = new ItemData();
                             nameItem.nameList = namedata.get(i);
@@ -125,9 +176,13 @@ public class RoomActivity extends AppCompatActivity {
                                 }
                             }
                         });
-//=====================================================================================
                     }
                 });
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
             }
 
             @Override
@@ -177,9 +232,9 @@ public class RoomActivity extends AppCompatActivity {
 
     public void outOfRoom(){
         if(own.equals("owner")) {
-            groupRef.getParent().removeValue();
+            memberRef.getParent().removeValue();
         } else {
-            groupRef.child(name).removeValue();
+            memberRef.child(name).removeValue();
         }
         Intent intent = new Intent(RoomActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 액티비티 스택에 쌓인 액티비티 제거
@@ -189,18 +244,42 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     public void showList(final RoomActivity.MyCallback myCallback) {
-        groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
+             memberRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                    Map<String, Object> membernames = (Map<String, Object>)dataSnapshot.getValue();
-                    for(String membersKey : membernames.keySet()){
-                        memberList.put(membersKey, membernames.get(membersKey));
-                    }
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                System.out.println(dataSnapshot);
+                System.out.println("key : " + dataSnapshot.getKey());
+                System.out.println("value : " + dataSnapshot.getValue());
+                memberList.put(dataSnapshot.getKey(), dataSnapshot.getValue());
+                System.out.println(memberList);
                 myCallback.onCallback(memberList);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getKey().toString().equals("member")){
+                    Map<String, Object> membernames = (Map<String, Object>)dataSnapshot.getValue();
+                    for(String membersKey : membernames.keySet()){
+                        memberList.put(membersKey, membernames.get(membersKey));
+                    }
+                }
+                myCallback.onCallback(memberList);
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
         });
     }
 
