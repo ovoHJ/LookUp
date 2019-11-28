@@ -113,13 +113,13 @@
 
     <Button
         android:id="@+id/minute_input"
-        android:digits="0123456789"
-        android:inputType="number"
         android:layout_width="52dp"
         android:layout_height="52dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/rounded"
+        android:digits="0123456789"
         android:hint="00"
+        android:inputType="number"
         android:onClick="showTimePickerDialog"
         android:padding="10dp"
         android:textColor="#797979"
@@ -131,14 +131,14 @@
 
     <Button
         android:id="@+id/hour_input"
-        android:digits="0123456789"
-        android:inputType="number"
         android:layout_width="52dp"
         android:layout_height="52dp"
         android:layout_marginStart="108dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/rounded"
+        android:digits="0123456789"
         android:hint="00"
+        android:inputType="number"
         android:onClick="showTimePickerDialog"
         android:padding="10dp"
         android:textColor="#797979"

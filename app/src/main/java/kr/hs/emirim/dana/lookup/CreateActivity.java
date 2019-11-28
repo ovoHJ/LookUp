@@ -122,7 +122,8 @@ public class CreateActivity extends AppCompatActivity {
             public void onClick(View v) {
                 name = room_name.getText().toString();
                 owner = leader_name.getText().toString();
-                timer = addZero(hour_input.getText().toString()) + addZero(minute_input.getText().toString());
+                timer = addZero(hour_input.getText().toString()) + " : " + addZero(minute_input.getText().toString());
+                System.out.println("시간 > "+timer);
                 if (name != null || owner != null || !name.equals("") || !owner.equals("")) {
                     newGroupPost();
                     Intent intent = new Intent(CreateActivity.this, RoomActivity.class);
@@ -130,6 +131,9 @@ public class CreateActivity extends AppCompatActivity {
                     intent.putExtra("name", owner);
                     intent.putExtra("roomName", name);
                     intent.putExtra("mode", mode);
+                    if(mode.equals("타이머")){
+                        intent.putExtra("timer", timer);
+                    }
 
                     startActivity(intent);
 
@@ -143,9 +147,10 @@ public class CreateActivity extends AppCompatActivity {
     }
 
     public String addZero(String s){
-        if (s.length() < 2){
-            return "0" + s;
-        }
+        if(s.length() == 0)
+            s = "00";
+        if(s.length() == 1)
+            s = "0" + s;
         return s;
     }
 
