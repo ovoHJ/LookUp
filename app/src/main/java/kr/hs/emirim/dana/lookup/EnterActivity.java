@@ -110,7 +110,6 @@ public class EnterActivity extends AppCompatActivity {
     public interface MyCallback {
         void onCallback(ArrayList<String> keyValue, ArrayList<String> memberValue);
     }
-
 }
 
 
