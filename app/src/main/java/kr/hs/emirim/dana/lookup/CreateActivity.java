@@ -47,7 +47,7 @@ public class CreateActivity extends AppCompatActivity {
     int max = 999999;
 
     int result = (int) (Math.random() * (max - min + 1)) + min;
-    String rnd_code = Integer.toString(result);
+    String rnd_code = Integer.toString(result); //코드 중복 방지
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
