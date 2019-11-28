@@ -70,46 +70,6 @@ public class RoomActivity extends AppCompatActivity {
         groupRef = mDatabase.child("groups").child(code);
         rListView = (ListView)findViewById(R.id.nameList);
 
-        showList(new RoomActivity.MyCallback() {
-            @Override
-            public void onCallback(Map<String, Object> List) {
-                for (String key: List.keySet()) {
-                    if(name.equals(key)){
-                        own = List.get(key).toString();
-                        Log.d("own", own);
-                    }
-                    namedata.add(key);
-                }
-                memberList = (HashMap<String, Object>) List;
-
-                int nDatCnt = 0;
-                final ArrayList<ItemData> dnameData = new ArrayList<>();
-                for (int i=0; i< namedata.size(); i++){
-                    ItemData nameItem = new ItemData();
-                    nameItem.nameList = (i+1)+". "+ namedata.get(i);
-                    dnameData.add(nameItem);
-                }
-
-                ListAdapter rAdapter = new ListAdapter(dnameData);
-                rListView.setAdapter(rAdapter);
-
-                rArray.add(new ItemData());
-
-                rTextView = (TextView) findViewById(R.id.connectionCount);
-                rTextView.setText(rAdapter.getCount()+"명");
-
-                rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        //선택한 리스트값이 name과 같을 경우에만
-                        outOfRoom();
-                    }
-                });
-//=====================================================================================
-            }
-        });
-
-
         rTextView = (TextView) findViewById(R.id.roomPwd);
         rTextView.setText(code);
 
@@ -124,6 +84,70 @@ public class RoomActivity extends AppCompatActivity {
         rTextView.getPaint().setShader(textShader);
 
         findViewById(R.id.floatingBtn).setOnClickListener(floatingBtnClick);
+
+        groupRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                showList(new RoomActivity.MyCallback() {
+                    @Override
+                    public void onCallback(Map<String, Object> List) {
+                        for (String key: List.keySet()) {
+                            if(name.equals(key)){
+                                own = List.get(key).toString();
+                                Log.d("own", own);
+                            }
+                            namedata.add(key);
+                        }
+                        memberList = (HashMap<String, Object>) List;
+
+                        int nDatCnt = 0;
+                        final ArrayList<ItemData> dnameData = new ArrayList<>();
+                        for (int i=0; i< namedata.size(); i++){
+                            ItemData nameItem = new ItemData();
+                            nameItem.nameList = (i+1)+". "+ namedata.get(i);
+                            dnameData.add(nameItem);
+                        }
+
+                        ListAdapter rAdapter = new ListAdapter(dnameData);
+                        rListView.setAdapter(rAdapter);
+
+                        rArray.add(new ItemData());
+
+                        rTextView = (TextView) findViewById(R.id.connectionCount);
+                        rTextView.setText(rAdapter.getCount()+"명");
+
+                        rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                //선택한 리스트값이 name과 같을 경우에만
+                                outOfRoom();
+                            }
+                        });
+//=====================================================================================
+                    }
+                });
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     Button.OnClickListener floatingBtnClick = new View.OnClickListener() {
