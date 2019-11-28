@@ -106,6 +106,7 @@
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/minute_input"
         app:layout_constraintStart_toEndOf="@+id/hour_input"
         app:layout_constraintTop_toBottomOf="@+id/spinner" />
@@ -121,8 +122,27 @@
         android:padding="10dp"
         android:textColor="#797979"
         android:textSize="20sp"
+        android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/minute"
         app:layout_constraintStart_toEndOf="@+id/hour_"
+        app:layout_constraintTop_toBottomOf="@+id/spinner" />
+
+    <Button
+        android:id="@+id/hour_input"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_marginStart="108dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/rounded"
+        android:hint="00"
+        android:onClick="showTimePickerDialog"
+        android:padding="10dp"
+        android:textColor="#797979"
+        android:textSize="20sp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/hour_"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
     <TextView
@@ -138,25 +158,9 @@
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/minute_input"
-        app:layout_constraintTop_toBottomOf="@+id/spinner" />
-
-    <Button
-        android:id="@+id/hour_input"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="108dp"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/rounded"
-        android:hint="00"
-        android:onClick="showTimePickerDialog"
-        android:padding="10dp"
-        android:textColor="#797979"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/hour_"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner" />
 
     <ImageView

@@ -84,10 +84,11 @@ public class RoomActivity extends AppCompatActivity {
         });
 
         rTextView = (TextView) findViewById(R.id.roomPwd);
-        rTextView.setText("241265");
+        rTextView.setText(code);
 
+        //코드 텍스트 색 바꾸기
         TextPaint paint = rTextView.getPaint();
-        float width = paint.measureText("241265");
+        float width = paint.measureText(code);
 
         Shader textShader = new LinearGradient(0, 0, width, rTextView.getTextSize(),
                 new int[]{

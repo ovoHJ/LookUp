@@ -6,12 +6,17 @@ package kr.hs.emirim.dana.lookup;
         import android.app.Dialog;
         import android.app.TimePickerDialog;
         import android.content.Intent;
+        import android.graphics.Color;
+        import android.graphics.LinearGradient;
+        import android.graphics.Shader;
         import android.os.Bundle;
+        import android.text.TextPaint;
         import android.text.format.DateFormat;
         import android.util.Log;
         import android.view.View;
         import android.widget.Button;
         import android.widget.EditText;
+        import android.widget.Spinner;
         import android.widget.TextView;
         import android.widget.TimePicker;
 
@@ -32,13 +37,13 @@ public class CreateActivity extends AppCompatActivity {
     Button hour_input;
     Button minute_input;
     Button create_bt;
+    Spinner mode;
 
     private DatabaseReference mDatabase;
     DatabaseReference groupRef;
     String key;
 
     String name;
-    String code;
     int personnel = 0;
     String timer;
     String owner;
@@ -48,23 +53,34 @@ public class CreateActivity extends AppCompatActivity {
     int max = 999999;
 
     int result = (int) (Math.random() * (max - min + 1)) + min;
-    String rnd_code = Integer.toString(result);
+    String code = Integer.toString(result);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
 
-//        random_number = (TextView)findViewById(R.id.random_number);
+       random_number = (TextView)findViewById(R.id.random_number);
 //        room_name = (EditText)findViewById(R.id.room_name);
 //        leader_name = (EditText)findViewById(R.id.leader_name);
 //        hour_input = (Button)findViewById(R.id.hour_input);
 //        minute_input = (Button)findViewById(R.id.minute_input);
 //        create_bt = (Button)findViewById(R.id.create_bt);
         create_bt.setOnClickListener(m_crBtnClick);
+        mode = (Spinner)findViewById(R.id.spinner); //모드가 타이머면 아래 요소 visible 바꾸기, 모드 값 RoomAcitivity로 넘기기
 
-        random_number.setText(rnd_code);
-        code = rnd_code;
+        random_number.setText(code);
+
+        //코드 텍스트 색 바꾸기
+        TextPaint paint = random_number.getPaint();
+        float width = paint.measureText(code);
+
+        Shader textShader = new LinearGradient(0, 0, width, random_number.getTextSize(),
+                new int[]{
+                        Color.parseColor("#00B2FF"),
+                        Color.parseColor("#00CDC1"),
+                }, null, Shader.TileMode.CLAMP);
+        random_number.getPaint().setShader(textShader);
 
         //hour_input.setText(hour);
         //minute_input.setText(minute);
@@ -79,7 +95,7 @@ public class CreateActivity extends AppCompatActivity {
         public void onClick(View v) {
             name = room_name.getText().toString();
             owner = leader_name.getText().toString();
-            if (name != null || owner != null || !name.equals("") || !owner.equals("")) {
+            if (name != null && owner != null && !name.equals("") && !owner.equals("")) {
                 newGroupPost();
                 Intent intent = new Intent(CreateActivity.this, RoomActivity.class);
                 intent.putExtra("code", code);
