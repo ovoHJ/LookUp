@@ -1,31 +1,29 @@
 package kr.hs.emirim.dana.lookup;
 
-        import androidx.appcompat.app.AppCompatActivity;
-        import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
-        import android.app.Dialog;
-        import android.app.TimePickerDialog;
-        import android.content.Intent;
-        import android.graphics.Color;
-        import android.graphics.LinearGradient;
-        import android.graphics.Shader;
-        import android.os.Bundle;
-        import android.text.TextPaint;
-        import android.text.format.DateFormat;
-        import android.util.Log;
-        import android.view.View;
-        import android.widget.Button;
-        import android.widget.EditText;
-        import android.widget.Spinner;
-        import android.widget.TextView;
-        import android.widget.TimePicker;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.os.Bundle;
+import android.text.format.DateFormat;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.TimePicker;
 
-        import com.google.firebase.database.DatabaseReference;
-        import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
-        import java.util.Calendar;
-        import java.util.HashMap;
-        import java.util.Map;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CreateActivity extends AppCompatActivity {
 
@@ -35,15 +33,20 @@ public class CreateActivity extends AppCompatActivity {
     EditText room_name;
     EditText leader_name;
     Button hour_input;
+    TextView hour;
     Button minute_input;
+    TextView minute;
     Button create_bt;
-    Spinner mode;
+    Spinner spinner;
+    String[] spn_items;
+    ArrayAdapter<String> adapter;
+    String mode;
 
     private DatabaseReference mDatabase;
     DatabaseReference groupRef;
-    String key;
 
     String name;
+    String code;
     int personnel = 0;
     String timer;
     String owner;
@@ -53,37 +56,97 @@ public class CreateActivity extends AppCompatActivity {
     int max = 999999;
 
     int result = (int) (Math.random() * (max - min + 1)) + min;
-    String code = Integer.toString(result);
+    String rnd_code = Integer.toString(result);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
 
-       random_number = (TextView)findViewById(R.id.random_number);
-//        room_name = (EditText)findViewById(R.id.room_name);
-//        leader_name = (EditText)findViewById(R.id.leader_name);
-//        hour_input = (Button)findViewById(R.id.hour_input);
-//        minute_input = (Button)findViewById(R.id.minute_input);
-//        create_bt = (Button)findViewById(R.id.create_bt);
-        create_bt.setOnClickListener(m_crBtnClick);
-        mode = (Spinner)findViewById(R.id.spinner); //모드가 타이머면 아래 요소 visible 바꾸기, 모드 값 RoomAcitivity로 넘기기
+        spn_items = getResources().getStringArray(R.array.종료설정);
+        adapter = new ArrayAdapter<String>(getBaseContext(), R.layout.support_simple_spinner_dropdown_item, spn_items);
 
-        random_number.setText(code);
+        random_number = (TextView)findViewById(R.id.random_number);
+        room_name = (EditText)findViewById(R.id.room_name);
+        leader_name = (EditText)findViewById(R.id.leader_name);
 
-        //코드 텍스트 색 바꾸기
-        TextPaint paint = random_number.getPaint();
-        float width = paint.measureText(code);
+        hour_input = (Button)findViewById(R.id.hour_input);
+        hour = (TextView)findViewById(R.id.hour);
+        minute_input = (Button)findViewById(R.id.minute_input);
+        minute = (TextView)findViewById(R.id.minute);
 
-        Shader textShader = new LinearGradient(0, 0, width, random_number.getTextSize(),
-                new int[]{
-                        Color.parseColor("#00B2FF"),
-                        Color.parseColor("#00CDC1"),
-                }, null, Shader.TileMode.CLAMP);
-        random_number.getPaint().setShader(textShader);
+        spinner = (Spinner)findViewById(R.id.spinner);
+        adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
 
-        //hour_input.setText(hour);
-        //minute_input.setText(minute);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(i == 0){
+                    mode = spinner.getSelectedItem().toString();
+
+                    hour.setVisibility(View.VISIBLE);
+                    minute.setVisibility(View.VISIBLE);
+                    hour_input.setVisibility(View.VISIBLE);
+                    minute_input.setVisibility(View.VISIBLE);
+
+                    hour_input.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    });
+                    minute_input.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+
+                        }
+                    });
+                }
+                else {
+                    mode = spinner.getSelectedItem().toString();
+
+                    hour.setVisibility(View.INVISIBLE);
+                    minute.setVisibility(View.INVISIBLE);
+                    hour_input.setVisibility(View.INVISIBLE);
+                    minute_input.setVisibility(View.INVISIBLE);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) { }
+        });
+
+        create_bt = (Button)findViewById(R.id.create_bt);
+        create_bt.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                name = room_name.getText().toString();
+                owner = leader_name.getText().toString();
+                timer = addZero(hour_input.getText().toString()) + addZero(minute_input.getText().toString());
+                if (name != null || owner != null || !name.equals("") || !owner.equals("")) {
+                    newGroupPost();
+                    Intent intent = new Intent(CreateActivity.this, RoomActivity.class);
+                    intent.putExtra("code", code);
+                    intent.putExtra("name", owner);
+                    intent.putExtra("roomName", name);
+                    intent.putExtra("mode", mode);
+
+                    startActivity(intent);
+
+                }
+            }
+        });
+
+        random_number.setText(rnd_code);
+        code = rnd_code;
+
+    }
+
+    public String addZero(String s){
+        if (s.length() < 2){
+            return "0" + s;
+        }
+        return s;
     }
 
     public void showTimePickerDialog(View v) {
@@ -91,25 +154,11 @@ public class CreateActivity extends AppCompatActivity {
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
-    Button.OnClickListener m_crBtnClick = new View.OnClickListener() {
-        public void onClick(View v) {
-            name = room_name.getText().toString();
-            owner = leader_name.getText().toString();
-            if (name != null && owner != null && !name.equals("") && !owner.equals("")) {
-                newGroupPost();
-                Intent intent = new Intent(CreateActivity.this, RoomActivity.class);
-                intent.putExtra("code", code);
-                startActivity(intent);
-
-            }
-        }
-    };
-
 
     public void newGroupPost(){
         mDatabase = FirebaseDatabase.getInstance().getReference();
         groupRef = mDatabase.child("groups");
-        Group group = new Group(name, ++personnel, timer, owner);
+        Group group = new Group(name, timer, owner);
 
         Map<String, Object> postValues = group.toMap();
         Map<String, Object> childUpdates = new HashMap<>();
@@ -118,11 +167,6 @@ public class CreateActivity extends AppCompatActivity {
         groupRef.updateChildren(childUpdates);
     }
 
-//    public void removeGroup(){
-//        mDatabase.child("groups").child(key).removeValue();
-//        Log.d("remove test", "this is successed too");
-//    }
-//     remove test (원래 roomActiviry에 있을 메서드)
 }
 
 class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
