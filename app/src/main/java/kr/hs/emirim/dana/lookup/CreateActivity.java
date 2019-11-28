@@ -29,13 +29,12 @@ public class CreateActivity extends AppCompatActivity {
     TextView random_number;
     EditText room_name;
     EditText leader_name;
-    Button hour_input;
-    Button minute_input;
+    EditText hour_input;
+    EditText minute_input;
     Button create_bt;
 
     private DatabaseReference mDatabase;
     DatabaseReference groupRef;
-    String key;
 
     String name;
     String code;
@@ -55,19 +54,38 @@ public class CreateActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create);
 
-//        random_number = (TextView)findViewById(R.id.random_number);
-//        room_name = (EditText)findViewById(R.id.room_name);
-//        leader_name = (EditText)findViewById(R.id.leader_name);
-//        hour_input = (Button)findViewById(R.id.hour_input);
-//        minute_input = (Button)findViewById(R.id.minute_input);
-//        create_bt = (Button)findViewById(R.id.create_bt);
-        create_bt.setOnClickListener(m_crBtnClick);
+        random_number = (TextView)findViewById(R.id.random_number);
+        room_name = (EditText)findViewById(R.id.room_name);
+        leader_name = (EditText)findViewById(R.id.leader_name);
+        hour_input = (EditText)findViewById(R.id.hour_input);
+        minute_input = (EditText)findViewById(R.id.minute_input);
+        create_bt = (Button)findViewById(R.id.create_bt);
+        create_bt.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                name = room_name.getText().toString();
+                owner = leader_name.getText().toString();
+                timer = addZero(hour_input.getText().toString()) + addZero(minute_input.getText().toString());
+                if (name != null || owner != null || !name.equals("") || !owner.equals("")) {
+                    newGroupPost();
+                    Intent intent = new Intent(CreateActivity.this, RoomActivity.class);
+                    intent.putExtra("code", code);
+                    intent.putExtra("name", name);
+                    startActivity(intent);
+
+                }
+            }
+        });
 
         random_number.setText(rnd_code);
         code = rnd_code;
 
-        //hour_input.setText(hour);
-        //minute_input.setText(minute);
+    }
+
+    public String addZero(String s){
+        if (s.length() < 2){
+            return "0" + s;
+        }
+        return s;
     }
 
     public void showTimePickerDialog(View v) {
@@ -75,25 +93,11 @@ public class CreateActivity extends AppCompatActivity {
         newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
-    Button.OnClickListener m_crBtnClick = new View.OnClickListener() {
-        public void onClick(View v) {
-            name = room_name.getText().toString();
-            owner = leader_name.getText().toString();
-            if (name != null || owner != null || !name.equals("") || !owner.equals("")) {
-                newGroupPost();
-                Intent intent = new Intent(CreateActivity.this, RoomActivity.class);
-                intent.putExtra("code", code);
-                startActivity(intent);
-
-            }
-        }
-    };
-
 
     public void newGroupPost(){
         mDatabase = FirebaseDatabase.getInstance().getReference();
         groupRef = mDatabase.child("groups");
-        Group group = new Group(name, ++personnel, timer, owner);
+        Group group = new Group(name, timer, owner);
 
         Map<String, Object> postValues = group.toMap();
         Map<String, Object> childUpdates = new HashMap<>();
@@ -102,11 +106,6 @@ public class CreateActivity extends AppCompatActivity {
         groupRef.updateChildren(childUpdates);
     }
 
-//    public void removeGroup(){
-//        mDatabase.child("groups").child(key).removeValue();
-//        Log.d("remove test", "this is successed too");
-//    }
-//     remove test (원래 roomActiviry에 있을 메서드)
 }
 
 class TimePickerFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
