@@ -77,7 +77,7 @@ public class CreateActivity extends AppCompatActivity {
                 name = room_name.getText().toString();
                 owner = leader_name.getText().toString();
                 timer = addZero(hour_input.getText().toString()) + addZero(minute_input.getText().toString());
-                if (name != null || owner != null || !name.equals("") || !owner.equals("")) {
+                if (name != null && owner != null && !(name.equals("")) && !(owner.equals(""))) {
                     newGroupPost();
                     Intent intent = new Intent(CreateActivity.this, RoomActivity.class);
                     intent.putExtra("code", code);
