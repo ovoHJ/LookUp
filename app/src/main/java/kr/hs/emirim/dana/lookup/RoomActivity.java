@@ -119,13 +119,10 @@ public class RoomActivity extends AppCompatActivity {
                         rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                System.out.println(i);
-                                System.out.println(rListView.getSelectedItem());
-
-//                                System.out.println(selected_item);
-//                                if(name.equals(selected_item)){
-//                                    outOfRoom();
-//                                }
+                                String list = (String)namedata.get(i);
+                                if(name.equals(list)){
+                                    outOfRoom();
+                                }
                             }
                         });
 //=====================================================================================
@@ -191,7 +188,6 @@ public class RoomActivity extends AppCompatActivity {
         groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                    System.out.println(dataSnapshot.getValue());
                     Map<String, Object> membernames = (Map<String, Object>)dataSnapshot.getValue();
                     for(String membersKey : membernames.keySet()){
                         memberList.put(membersKey, membernames.get(membersKey));
