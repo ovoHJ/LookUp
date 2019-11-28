@@ -64,7 +64,7 @@ public class EnterActivity extends AppCompatActivity {
                 @Override
                 public void onCallback(ArrayList<String> keyValue, ArrayList<String> memberValue, String roomName) { ;
                         if (keyValue.contains(code) && !(code.equals(""))) {
-                            if(!(memberValue.contains(name)) && !(name.equals(""))){
+                            if(!(memberValue.get(0).contains(name)) && !(name.equals(""))){
                                 enterRoom();
                                 Intent intent = new Intent(EnterActivity.this, RoomActivity.class); //강은서 방접속한 후 들어가는 엑티비티 명 넣으셈.
                                 intent.putExtra("code", code);
@@ -73,7 +73,11 @@ public class EnterActivity extends AppCompatActivity {
                                 startActivity(intent);
                             } else {
                                 input_name.setText("");
-                                input_name.setHint("중복되지 않은 닉네임을 입력하세요");
+                                if(name.equals("")){
+                                    input_name.setHint("닉네임을 입력하세요");
+                                } else {
+                                    input_name.setHint("존재하는 닉네임입니다.");
+                                }
                             }
                         } else {
                             input_code.setText("");
@@ -94,7 +98,7 @@ public class EnterActivity extends AppCompatActivity {
                     if(code.equals(ds.getKey().toString())) {
                         Map<String, Object> memberMap = (HashMap<String, Object>) ((HashMap<String, Object>) ds.getValue()).get("member");
                         System.out.println(memberMap);
-                        memberValue.add(ds.getValue().toString()); //멤버들 받아오는 리스트
+                        memberValue.add(memberMap.toString()); //멤버들 받아오는 리스트
                     }
                     keyValue.add(ds.getKey().toString()); //코드 값 받아오는 리스트
                 }
