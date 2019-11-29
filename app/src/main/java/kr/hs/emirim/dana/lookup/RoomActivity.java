@@ -231,6 +231,8 @@ public class RoomActivity extends AppCompatActivity {
                 toastMessage.setTypeface(Typeface.create("roboto_bold", Typeface.BOLD));
                 toastMessage.setGravity(Gravity.CENTER);
                 toastView.setBackgroundResource(R.drawable.bg_gradient);
+                toast.setGravity(Gravity.BOTTOM, -100,
+                        getApplicationContext().getResources().getDisplayMetrics().heightPixels  * 9/10 - fab.getTop());
                 toast.show();
             } else{
                 showDialog();
