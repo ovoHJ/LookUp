@@ -78,7 +78,7 @@ public class RoomActivity extends AppCompatActivity {
         roomName = intent.getExtras().getString("roomName");
         mode = intent.getExtras().getString("mode");
         if(mode.equals("타이머")){
-            timer = intent.getExtras().getString("timer");
+            timer = intent.getExtras().getString("timer"); //EnterActivity에서 넘어갔을 경우 timer 받을 수 없음
             fab.setImageResource(R.drawable.clock);
         }
         fab.setOnClickListener(floatingBtnClick);
