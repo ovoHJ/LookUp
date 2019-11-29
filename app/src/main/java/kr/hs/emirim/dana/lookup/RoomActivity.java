@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextPaint;
@@ -64,7 +65,6 @@ public class RoomActivity extends AppCompatActivity {
     FloatingActionButton fab;
     Map<String, Object> memberList = new HashMap<>();
     ArrayList<String> namedata = new ArrayList<>();
-    View toastDesign;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +78,7 @@ public class RoomActivity extends AppCompatActivity {
         roomName = intent.getExtras().getString("roomName");
         mode = intent.getExtras().getString("mode");
 
-        if(mode.equals("타이머")){ //에러고치기 - 은서
+        if(mode.equals("타이머")){
             timer = intent.getExtras().getString("timer");
 
             fab.setImageResource(R.drawable.clock);
@@ -221,7 +221,17 @@ public class RoomActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             if(mode.equals("타이머")) {
-                Toast.makeText(getApplicationContext(), timer, Toast.LENGTH_SHORT).show();
+                Toast toast = Toast.makeText(RoomActivity.this, timer, Toast.LENGTH_SHORT);
+                View toastView = toast.getView(); // This'll return the default View of the Toast.
+
+                TextView toastMessage = (TextView)toastView.findViewById(android.R.id.message);
+                toastMessage.setWidth(500);
+                toastMessage.setTextSize(20);
+                toastMessage.setTextColor(Color.WHITE);
+                toastMessage.setTypeface(Typeface.create("roboto_bold", Typeface.BOLD));
+                toastMessage.setGravity(Gravity.CENTER);
+                toastView.setBackgroundResource(R.drawable.bg_gradient);
+                toast.show();
             } else{
                 showDialog();
             }

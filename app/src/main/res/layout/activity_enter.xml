@@ -7,86 +7,25 @@
     android:background="@color/colorPrimaryDark"
     tools:context=".EnterActivity">
 
-    <TextView
-        android:id="@+id/title"
+    <ImageView
+        android:id="@+id/imageView9"
         android:layout_width="wrap_content"
-        android:layout_height="33dp"
-        android:layout_marginStart="134dp"
-        android:layout_marginTop="106dp"
-        android:layout_marginEnd="139dp"
-        android:fontFamily="@font/roboto_bold"
-        android:text="코드를 입력하세요"
-        android:textColor="@color/colorBright"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="130dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <EditText
-        android:id="@+id/input_code"
-        android:digits="0123456789"
-        android:inputType="number"
-        android:layout_width="253dp"
-        android:layout_height="65dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="23dp"
-        android:layout_marginEnd="79dp"
-        android:background="@drawable/bg_gradient1"
-        android:padding="10dp"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView7"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
-
-    <EditText
-        android:id="@+id/input_name"
-        android:layout_width="253dp"
-        android:layout_height="52dp"
-        android:layout_marginStart="80dp"
-        android:layout_marginTop="76dp"
-        android:layout_marginEnd="79dp"
-        android:background="@drawable/rounded"
-        android:hint="닉네임"
-        android:padding="10dp"
-        android:textColor="#797979"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/input_code" />
-
-
-    <Button
-        android:id="@+id/start_bt"
-        android:layout_width="241dp"
-        android:layout_height="46dp"
-        android:layout_marginTop="428dp"
-        android:background="@drawable/bg_gradient"
-        android:fontFamily="@font/roboto_bold"
-        android:text="@string/enter_room"
-        android:textColor="@color/colorBright"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView8"
+        app:srcCompat="@drawable/rectangle8" />
 
     <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="28dp"
-        android:layout_height="24dp"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="277dp"
-        app:layout_constraintEnd_toStartOf="@+id/imageView5"
-        app:layout_constraintStart_toStartOf="parent"
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/rectangle7" />
 
     <ImageView
-        android:id="@+id/imageView5"
+        android:id="@+id/imageView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -94,24 +33,81 @@
         app:srcCompat="@drawable/rectangle6" />
 
     <ImageView
-        android:id="@+id/imageView6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="1dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView5"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/rectangle7" />
-
-    <ImageView
-        android:id="@+id/imageView7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="162dp"
-
+        android:id="@+id/imageView8"
+        android:layout_width="19dp"
+        android:layout_height="17dp"
+        android:layout_marginStart="35dp"
+        android:layout_marginTop="38dp"
+        app:layout_constraintEnd_toStartOf="@+id/imageView5"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3"
-        app:srcCompat="@drawable/rectangle8" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="33dp"
+        android:fontFamily="@font/roboto_bold"
+        android:text="코 드 를   입 력 하 세 요"
+        android:textColor="@color/colorBright"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.17000002" />
+
+
+    <EditText
+        android:id="@+id/input_code"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_gradient1"
+        android:digits="0123456789"
+        android:fontFamily="@font/roboto_bold"
+        android:gravity="center"
+        android:inputType="number"
+        android:padding="10dp"
+        android:textColor="#FFFFFF"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title" />
+
+
+    <EditText
+        android:id="@+id/input_name"
+        android:layout_width="253dp"
+        android:layout_height="52dp"
+        android:background="@drawable/rounded"
+        android:hint="닉네임"
+        android:padding="10dp"
+        android:textColor="#797979"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/start_bt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_code" />
+
+    <Button
+        android:id="@+id/start_bt"
+        android:layout_width="253dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:background="@drawable/bg_gradient"
+        android:fontFamily="@font/roboto_bold"
+        android:text="@string/enter_room"
+        android:textColor="@color/colorBright"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_name" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
