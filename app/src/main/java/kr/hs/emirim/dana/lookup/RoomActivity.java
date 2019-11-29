@@ -17,7 +17,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.TextPaint;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 
 import android.widget.Button;
@@ -25,6 +27,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -55,18 +58,30 @@ public class RoomActivity extends AppCompatActivity {
     String own;
     String roomName;
     String choice;
-    Map<String, Object> memberList = new HashMap<>();
 
+    String mode;
+    String timer;
+    FloatingActionButton fab;
+    Map<String, Object> memberList = new HashMap<>();
+    ArrayList<String> namedata = new ArrayList<>();
+    View toastDesign;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
+        fab = (FloatingActionButton)findViewById(R.id.floatingBtn);
 
         Intent intent = getIntent();
         code = intent.getExtras().getString("code");
         name = intent.getExtras().getString("name");
         roomName = intent.getExtras().getString("roomName");
+        mode = intent.getExtras().getString("mode");
+        if(mode.equals("타이머")){
+            timer = intent.getExtras().getString("timer");
+            fab.setImageResource(R.drawable.clock);
+        }
+        fab.setOnClickListener(floatingBtnClick);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         groupRef = mDatabase.child("groups").child(code);
@@ -203,7 +218,11 @@ public class RoomActivity extends AppCompatActivity {
     Button.OnClickListener floatingBtnClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            showDialog();
+            if(mode.equals("타이머")) {
+                Toast.makeText(getApplicationContext(), timer, Toast.LENGTH_SHORT).show();
+            } else{
+                showDialog();
+            }
         }
     };
 
