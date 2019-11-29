@@ -32,7 +32,7 @@ public class EnterActivity extends AppCompatActivity {
     String name;
     Map<String, Object> addMember = new HashMap<>();
     ArrayList<String> keyValue = new ArrayList<>();
-    ArrayList<String> memberValue = new ArrayList<>();
+    Map<String, Object> memberMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +62,9 @@ public class EnterActivity extends AppCompatActivity {
             name = input_name.getText().toString();
             selectData(new MyCallback() {
                 @Override
-                public void onCallback(ArrayList<String> keyValue, ArrayList<String> memberValue, String roomName) { ;
+                public void onCallback(ArrayList<String> keyValue, Map<String, Object> memberValue, String roomName) { ;
                         if (keyValue.contains(code) && !(code.equals(""))) {
-                            if(!(memberValue.contains(name)) && !(name.equals(""))){
+                            if(!(memberValue.containsKey(name)) && !(name.equals(""))){
                                 enterRoom();
                                 Intent intent = new Intent(EnterActivity.this, RoomActivity.class); //강은서 방접속한 후 들어가는 엑티비티 명 넣으셈.
                                 intent.putExtra("code", code);
@@ -73,7 +73,11 @@ public class EnterActivity extends AppCompatActivity {
                                 startActivity(intent);
                             } else {
                                 input_name.setText("");
-                                input_name.setHint("중복되지 않은 닉네임을 입력하세요");
+                                if(name.equals("")){
+                                    input_name.setHint("닉네임을 입력하세요");
+                                } else {
+                                    input_name.setHint("존재하는 닉네임입니다.");
+                                }
                             }
                         } else {
                             input_code.setText("");
@@ -92,15 +96,12 @@ public class EnterActivity extends AppCompatActivity {
                 roomName = dataSnapshot.child(code).child("name").getValue().toString();
                 for (DataSnapshot ds: dataSnapshot.getChildren()) {
                     if(code.equals(ds.getKey().toString())) {
-                        Map<String, Object> memberMap = (HashMap<String, Object>) ((HashMap<String, Object>) ds.getValue()).get("member");
-                        System.out.println(memberMap);
-                        memberValue.add(ds.getValue().toString()); //멤버들 받아오는 리스트
+                        memberMap = (HashMap<String, Object>) ((HashMap<String, Object>) ds.getValue()).get("member");
                     }
                     keyValue.add(ds.getKey().toString()); //코드 값 받아오는 리스트
                 }
                 System.out.println(keyValue);
-                System.out.println(memberValue);
-                myCallback.onCallback(keyValue, memberValue, roomName);
+                myCallback.onCallback(keyValue, memberMap, roomName);
             }
 
             @Override
@@ -109,7 +110,7 @@ public class EnterActivity extends AppCompatActivity {
     }
 
     public interface MyCallback {
-        void onCallback(ArrayList<String> keyValue, ArrayList<String> memberValue, String roomName);
+        void onCallback(ArrayList<String> keyValue, Map<String, Object> memberValue, String roomName);
     }
 }
 

@@ -50,12 +50,15 @@ public class RoomActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
     DatabaseReference groupRef;
+    DatabaseReference memberRef;
     AlertDialog.Builder builder;
 
     String code;
     String name;
     String own;
     String roomName;
+    String choice;
+
     String mode;
     String timer;
     FloatingActionButton fab;
@@ -81,7 +84,8 @@ public class RoomActivity extends AppCompatActivity {
         fab.setOnClickListener(floatingBtnClick);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        groupRef = mDatabase.child("groups").child(code).child("member");
+        groupRef = mDatabase.child("groups").child(code);
+        memberRef = groupRef.child("member");
         rListView = (ListView)findViewById(R.id.nameList);
 
         roomPwdView = (TextView) findViewById(R.id.roomPwd);
@@ -99,12 +103,16 @@ public class RoomActivity extends AppCompatActivity {
                 }, null, Shader.TileMode.CLAMP);
         roomPwdView.getPaint().setShader(textShader);
 
-        groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        findViewById(R.id.floatingBtn).setOnClickListener(floatingBtnClick);
+
+
+        memberRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 showList(new RoomActivity.MyCallback() {
                     @Override
                     public void onCallback(Map<String, Object> List) {
+                        final ArrayList<String> namedata = new ArrayList<>();
                         memberList = (Map<String, Object>)List;
                         for (String key: memberList.keySet()) {
                             namedata.add(key);
@@ -112,6 +120,7 @@ public class RoomActivity extends AppCompatActivity {
                                 own = memberList.get(key).toString();
                             }
                         }
+                        System.out.println("namedata : " + namedata);
                         int nDatCnt = 0;
                         final ArrayList<ItemData> dnameData = new ArrayList<>();
 
@@ -120,6 +129,7 @@ public class RoomActivity extends AppCompatActivity {
                             nameItem.nameList = namedata.get(i);
                             dnameData.add(nameItem);
                         }
+                        System.out.println("1dnameData : " + dnameData);
 
                         final ListAdapter rAdapter = new ListAdapter(dnameData);
                         rListView.setAdapter(rAdapter);
@@ -130,15 +140,72 @@ public class RoomActivity extends AppCompatActivity {
                         rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                String list = (String)namedata.get(i);
-                                if(name.equals(list)){
-                                    outOfRoom();
+                                choice = (String)namedata.get(i);
+                                System.out.println(i);
+                                System.out.println("choice: " + choice);
+                                if(name.equals(choice)){
+                                    showDialog();
                                 }
                             }
                         });
-//=====================================================================================
                     }
                 });
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                memberList.put(dataSnapshot.getKey(), dataSnapshot.getValue());
+
+                if(!(memberList.containsValue("owner"))){
+                    Intent intent = new Intent(RoomActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 액티비티 스택에 쌓인 액티비티 제거
+                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); //
+                    startActivity(intent);
+                    finish();
+                }
+                final ArrayList<String> namedata = new ArrayList<>();
+                for (String key: memberList.keySet()) {
+                    if(!key.equals(dataSnapshot.getKey().toString())){
+                        namedata.add(key);
+                        if(key.equals(name)){
+                            own = memberList.get(key).toString();
+                        }
+                    }
+                }
+                int nDatCnt = 0;
+                final ArrayList<ItemData> dnameData = new ArrayList<>();
+
+                for (int i=0; i< namedata.size(); i++){
+                    ItemData nameItem = new ItemData();
+                    nameItem.nameList = namedata.get(i);
+                    dnameData.add(nameItem);
+                }
+
+                final ListAdapter rAdapter = new ListAdapter(dnameData);
+                rListView.setAdapter(rAdapter);
+
+                roomCntView = (TextView) findViewById(R.id.connectionCount);
+                roomCntView.setText(rAdapter.getCount()+"명");
+
+                rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        choice = (String)namedata.get(i);
+                        if(name.equals(choice)){
+                            showDialog();
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
             }
 
             @Override
@@ -154,28 +221,20 @@ public class RoomActivity extends AppCompatActivity {
             if(mode.equals("타이머")) {
                 Toast.makeText(getApplicationContext(), timer, Toast.LENGTH_SHORT).show();
             } else{
-                outOfRoom();
+                showDialog();
             }
         }
     };
 
-    public void outOfRoom(){
+    public void showDialog(){
         builder = new AlertDialog.Builder(RoomActivity.this, R.style.customDialog);
         builder.setTitle("방을 나가시겠습니까?");
 
         builder.setPositiveButton(" ", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                if(own.equals("owner")) {
-                    groupRef.getParent().removeValue();
-                } else {
-                    groupRef.child("member").child(name).removeValue();
-                }
-                Intent intent = new Intent(RoomActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 액티비티 스택에 쌓인 액티비티 제거
-                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); //
-                startActivity(intent);
-                finish();
+                outOfRoom();
+
             }
         });
 
@@ -199,19 +258,47 @@ public class RoomActivity extends AppCompatActivity {
         no.setCompoundDrawables(img2, null, null, null);
     }
 
+    public void outOfRoom(){
+        if(own.equals("owner")) {
+            memberRef.getParent().removeValue();
+        } else {
+            memberRef.child(name).removeValue();
+        }
+        Intent intent = new Intent(RoomActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 액티비티 스택에 쌓인 액티비티 제거
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); //
+        startActivity(intent);
+        finish();
+    }
+
     public void showList(final RoomActivity.MyCallback myCallback) {
-        groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
+             memberRef.addChildEventListener(new ChildEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Map<String, Object> membernames = (Map<String, Object>)dataSnapshot.getValue();
-                for(String membersKey : membernames.keySet()){
-                    memberList.put(membersKey, membernames.get(membersKey));
-                }
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                memberList.put(dataSnapshot.getKey(), dataSnapshot.getValue());
+                System.out.println(memberList);
                 myCallback.onCallback(memberList);
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
         });
     }
 

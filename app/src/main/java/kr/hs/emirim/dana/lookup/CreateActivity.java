@@ -56,7 +56,7 @@ public class CreateActivity extends AppCompatActivity {
     int max = 999999;
 
     int result = (int) (Math.random() * (max - min + 1)) + min;
-    String rnd_code = Integer.toString(result);
+    String rnd_code = Integer.toString(result); //코드 중복 방지
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,9 +122,11 @@ public class CreateActivity extends AppCompatActivity {
             public void onClick(View v) {
                 name = room_name.getText().toString();
                 owner = leader_name.getText().toString();
+
                 timer = addZero(hour_input.getText().toString()) + " : " + addZero(minute_input.getText().toString());
                 System.out.println("시간 > "+timer);
                 if (name != null || owner != null || !name.equals("") || !owner.equals("")) {
+
                     newGroupPost();
                     Intent intent = new Intent(CreateActivity.this, RoomActivity.class);
                     intent.putExtra("code", code);
