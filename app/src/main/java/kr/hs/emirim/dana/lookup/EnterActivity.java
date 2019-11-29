@@ -28,8 +28,11 @@ public class EnterActivity extends AppCompatActivity {
     DatabaseReference groupRef = mDatabase.child("groups");
     DatabaseReference memberRef;
 
+    String timer;
     String code;
+    String roomName;
     String name;
+    String mode;
     Map<String, Object> addMember = new HashMap<>();
     ArrayList<String> keyValue = new ArrayList<>();
     Map<String, Object> memberMap;
@@ -70,6 +73,8 @@ public class EnterActivity extends AppCompatActivity {
                                 intent.putExtra("code", code);
                                 intent.putExtra("name", name);
                                 intent.putExtra("roomName", roomName);
+                                intent.putExtra("timer", timer);
+                                intent.putExtra("mode", mode);
                                 startActivity(intent);
                             } else {
                                 input_name.setText("");
@@ -92,15 +97,21 @@ public class EnterActivity extends AppCompatActivity {
         groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String roomName;
-                roomName = dataSnapshot.child(code).child("name").getValue().toString();
                 for (DataSnapshot ds: dataSnapshot.getChildren()) {
-                    if(code.equals(ds.getKey().toString())) {
+                    if(code.equals(ds.getKey())) {
+                        timer = ((Map<String, Object>)ds.getValue()).get("timer").toString();
+                        roomName = ((Map<String, Object>)ds.getValue()).get("name").toString();
+                        System.out.println("timer : " + timer);
+                        System.out.println("roomName : " + roomName);
+                        if(timer.equals("")) {
+                            mode = "사용자 지정";
+                        } else {
+                            mode = "타이머";
+                        }
                         memberMap = (HashMap<String, Object>) ((HashMap<String, Object>) ds.getValue()).get("member");
                     }
                     keyValue.add(ds.getKey().toString()); //코드 값 받아오는 리스트
                 }
-                System.out.println(keyValue);
                 myCallback.onCallback(keyValue, memberMap, roomName);
             }
 
