@@ -77,6 +77,7 @@ public class RoomActivity extends AppCompatActivity {
         name = intent.getExtras().getString("name");
         roomName = intent.getExtras().getString("roomName");
         mode = intent.getExtras().getString("mode");
+        Log.d("mode", mode);
         if(mode.equals("타이머")){
             timer = intent.getExtras().getString("timer"); //EnterActivity에서 넘어갔을 경우 timer 받을 수 없음
             fab.setImageResource(R.drawable.clock);
@@ -129,7 +130,6 @@ public class RoomActivity extends AppCompatActivity {
                             nameItem.nameList = namedata.get(i);
                             dnameData.add(nameItem);
                         }
-                        System.out.println("1dnameData : " + dnameData);
 
                         final ListAdapter rAdapter = new ListAdapter(dnameData);
                         rListView.setAdapter(rAdapter);
@@ -141,8 +141,6 @@ public class RoomActivity extends AppCompatActivity {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                 choice = (String)namedata.get(i);
-                                System.out.println(i);
-                                System.out.println("choice: " + choice);
                                 if(name.equals(choice)){
                                     showDialog();
                                 }
@@ -160,6 +158,7 @@ public class RoomActivity extends AppCompatActivity {
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
                 memberList.put(dataSnapshot.getKey(), dataSnapshot.getValue());
+                Log.d("memberList", memberList.toString());
 
                 if(!(memberList.containsValue("owner"))){
                     Intent intent = new Intent(RoomActivity.this, MainActivity.class);
@@ -170,8 +169,10 @@ public class RoomActivity extends AppCompatActivity {
                 }
                 final ArrayList<String> namedata = new ArrayList<>();
                 for (String key: memberList.keySet()) {
-                    if(!key.equals(dataSnapshot.getKey().toString())){
+                    Log.d("key", key);
+                    if(!key.equals(dataSnapshot.getKey())){
                         namedata.add(key);
+                        System.out.println(namedata);
                         if(key.equals(name)){
                             own = memberList.get(key).toString();
                         }
@@ -272,7 +273,7 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     public void showList(final RoomActivity.MyCallback myCallback) {
-             memberRef.addChildEventListener(new ChildEventListener() {
+        memberRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 memberList.put(dataSnapshot.getKey(), dataSnapshot.getValue());
@@ -287,7 +288,8 @@ public class RoomActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
+                System.out.println("key : " + dataSnapshot.getKey());
+                System.out.println("value : " + dataSnapshot.getValue());
             }
 
             @Override
