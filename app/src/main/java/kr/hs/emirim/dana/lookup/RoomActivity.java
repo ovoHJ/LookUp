@@ -77,7 +77,7 @@ public class RoomActivity extends AppCompatActivity {
         name = intent.getExtras().getString("name");
         roomName = intent.getExtras().getString("roomName");
         mode = intent.getExtras().getString("mode");
-        if(mode.equals("타이머")){
+        if(mode.equals("타이머")){ //에러고치기 - 은서
             timer = intent.getExtras().getString("timer");
             fab.setImageResource(R.drawable.clock);
         }
