@@ -122,11 +122,16 @@ public class CreateActivity extends AppCompatActivity {
             public void onClick(View v) {
                 name = room_name.getText().toString();
                 owner = leader_name.getText().toString();
+                Log.d("name", name);
+                Log.d("owner", owner);
 
-                timer = addZero(hour_input.getText().toString()) + " : " + addZero(minute_input.getText().toString());
-                System.out.println("시간 > "+timer);
-                if (name != null || owner != null || !name.equals("") || !owner.equals("")) {
+                if (mode.equals("타이머")){
+                    timer = addZero(hour_input.getText().toString()) + " : " + addZero(minute_input.getText().toString());
+                } else if(mode.equals("사용자 지정")){
+                    timer = "";
+                }
 
+                if (!(name.equals("")) && !(owner.equals(""))) {
                     newGroupPost();
                     Intent intent = new Intent(CreateActivity.this, RoomActivity.class);
                     intent.putExtra("code", code);
@@ -136,9 +141,13 @@ public class CreateActivity extends AppCompatActivity {
                     if(mode.equals("타이머")){
                         intent.putExtra("timer", timer);
                     }
-
                     startActivity(intent);
-
+                } else {
+                    if ((name.equals(""))) {
+                        room_name.setHint("방 이름을 입력하세요.");
+                    } else if ((owner.equals(""))) {
+                        leader_name.setHint("닉네임을 입력하세요.");
+                    }
                 }
             }
         });
@@ -149,8 +158,6 @@ public class CreateActivity extends AppCompatActivity {
     }
 
     public String addZero(String s){
-        if(s.length() == 0)
-            s = "00";
         if(s.length() == 1)
             s = "0" + s;
         return s;
@@ -165,6 +172,9 @@ public class CreateActivity extends AppCompatActivity {
     public void newGroupPost(){
         mDatabase = FirebaseDatabase.getInstance().getReference();
         groupRef = mDatabase.child("groups");
+        if(mode.equals("사용자 지정")){
+            timer = "";
+        }
         Group group = new Group(name, timer, owner);
 
         Map<String, Object> postValues = group.toMap();
