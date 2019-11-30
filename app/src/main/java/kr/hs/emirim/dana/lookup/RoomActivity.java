@@ -92,6 +92,16 @@ public class RoomActivity extends AppCompatActivity {
         memberRef = groupRef.child("member");
         rListView = (ListView)findViewById(R.id.nameList);
 
+        rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                choice = (String)namedata.get(i);
+                if(name.equals(choice)){
+                    showDialog();
+                }
+            }
+        });
+
         roomPwdView = (TextView) findViewById(R.id.roomPwd);
         roomPwdView.setText(code);
         roomNameView = (TextView) findViewById(R.id.roomName);
@@ -145,7 +155,25 @@ public class RoomActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                namedata = new ArrayList<>();
+
                 memberList.remove(dataSnapshot.getKey(), dataSnapshot.getValue());
+
+                for (String key: memberList.keySet()) {
+                    System.out.println(key);
+                    namedata.add(key);
+                }
+
+                Log.d("memberList", memberList.toString());
+                if(!(memberList.containsValue("owner"))){
+                    Intent intent = new Intent(RoomActivity.this, MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 액티비티 스택에 쌓인 액티비티 제거
+                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); //
+                    startActivity(intent);
+                    finish();
+                }
+
+                showListView();
             }
 
             @Override
@@ -231,15 +259,7 @@ public class RoomActivity extends AppCompatActivity {
         roomCntView = (TextView) findViewById(R.id.connectionCount);
         roomCntView.setText(rAdapter.getCount()+"명");
 
-        rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                choice = (String)namedata.get(i);
-                if(name.equals(choice)){
-                    showDialog();
-                }
-            }
-        });
+
     }
 
     public void showList(final RoomActivity.MyCallback myCallback) {
@@ -258,20 +278,7 @@ public class RoomActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                for (Object value: memberList.values()
-                     ) {
-                    Log.d("memberList.value", value.toString());
 
-                }
-                if(!(memberList.containsValue("owner"))){
-                    Intent intent = new Intent(RoomActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 액티비티 스택에 쌓인 액티비티 제거
-                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); //
-                    startActivity(intent);
-                    finish();
-                }
-                //nameData
-                showListView();
             }
 
             @Override
