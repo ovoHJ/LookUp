@@ -122,8 +122,6 @@ public class CreateActivity extends AppCompatActivity {
             public void onClick(View v) {
                 name = room_name.getText().toString();
                 owner = leader_name.getText().toString();
-                Log.d("name", name);
-                Log.d("owner", owner);
 
                 if (mode.equals("타이머")){
                     timer = addZero(hour_input.getText().toString()) + " : " + addZero(minute_input.getText().toString());
