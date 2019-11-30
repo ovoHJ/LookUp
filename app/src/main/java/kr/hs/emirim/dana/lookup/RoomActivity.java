@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
 
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.widget.AdapterView;
 
 import android.widget.Button;
@@ -45,7 +47,6 @@ import java.util.Map;
 public class RoomActivity extends AppCompatActivity {
 
     private ListView rListView;
-    List<ItemData> rArray = new ArrayList<ItemData>();
     TextView roomNameView;
     TextView roomPwdView;
     TextView roomCntView;
@@ -65,8 +66,8 @@ public class RoomActivity extends AppCompatActivity {
     String timer;
     FloatingActionButton fab;
     Map<String, Object> memberList = new HashMap<>();
+
     ArrayList<String> namedata;
-    View toastDesign;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +81,7 @@ public class RoomActivity extends AppCompatActivity {
         roomName = intent.getExtras().getString("roomName");
         mode = intent.getExtras().getString("mode");
 
-        if(mode.equals("타이머")){ //에러고치기 - 은서
+        if(mode.equals("타이머")){
             timer = intent.getExtras().getString("timer");
 
             fab.setImageResource(R.drawable.clock);
@@ -192,7 +193,19 @@ public class RoomActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             if(mode.equals("타이머")) {
-                Toast.makeText(getApplicationContext(), timer, Toast.LENGTH_SHORT).show();
+                Toast toast = Toast.makeText(RoomActivity.this, timer, Toast.LENGTH_SHORT);
+                View toastView = toast.getView(); // This'll return the default View of the Toast.
+
+                TextView toastMessage = (TextView)toastView.findViewById(android.R.id.message);
+                toastMessage.setWidth(500);
+                toastMessage.setTextSize(20);
+                toastMessage.setTextColor(Color.WHITE);
+                toastMessage.setTypeface(Typeface.create("roboto_bold", Typeface.BOLD));
+                toastMessage.setGravity(Gravity.CENTER);
+                toastView.setBackgroundResource(R.drawable.bg_gradient);
+                toast.setGravity(Gravity.BOTTOM, -100,
+                        getApplicationContext().getResources().getDisplayMetrics().heightPixels  * 9/10 - fab.getTop());
+                toast.show();
             } else{
                 showDialog();
             }
@@ -207,7 +220,6 @@ public class RoomActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 outOfRoom();
-
             }
         });
 
@@ -258,8 +270,6 @@ public class RoomActivity extends AppCompatActivity {
 
         roomCntView = (TextView) findViewById(R.id.connectionCount);
         roomCntView.setText(rAdapter.getCount()+"명");
-
-
     }
 
     public void showList(final RoomActivity.MyCallback myCallback) {

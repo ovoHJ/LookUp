@@ -24,15 +24,16 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="33dp"
-        android:layout_marginTop="90dp"
         android:fontFamily="@font/roboto_bold"
         android:text="코 드 를   공 유 하 세 요"
         android:textColor="@color/colorBright"
         android:textSize="18sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.17000002" />
 
     <EditText
         android:id="@+id/room_name"
@@ -81,17 +82,18 @@
         android:id="@+id/create_bt"
         android:layout_width="253dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:background="@drawable/bg_gradient"
         android:fontFamily="@font/roboto_bold"
         android:text="@string/create_room"
         android:textColor="@color/colorBright"
         android:textSize="24sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.464"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/minute_input" />
+        app:layout_constraintTop_toBottomOf="@+id/minute_input"
+        app:layout_constraintVertical_bias="0.3" />
 
     <TextView
         android:id="@+id/hour"
@@ -192,8 +194,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.77"
-        app:layout_constraintStart_toEndOf="@+id/imageView5"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/rectangle7" />
 
@@ -202,8 +202,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="130dp"
-        app:layout_constraintEnd_toStartOf="@+id/room_name"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3"
         app:srcCompat="@drawable/rectangle8" />
