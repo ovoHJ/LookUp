@@ -42,11 +42,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// 먼저 EnterActivity에 ㅣㅇㅆ는 SELECT 데이터 메서드를 가져와서 모든 데이터를 읽고 이를 리스트 뷰에 올린다.
-
-//SELECT DATA() { //DATA를 모두 읽어옴
-//SHOW data() { 데이터를 리스트뷰에 보여줌.
-
 public class RoomActivity extends AppCompatActivity {
 
     private ListView rListView;
@@ -65,7 +60,6 @@ public class RoomActivity extends AppCompatActivity {
     String own;
     String roomName;
     String choice;
-    int index;
 
     String mode;
     String timer;
@@ -78,12 +72,20 @@ public class RoomActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
+        fab = (FloatingActionButton)findViewById(R.id.floatingBtn);
 
         Intent intent = getIntent();
         code = intent.getExtras().getString("code");
         name = intent.getExtras().getString("name");
         roomName = intent.getExtras().getString("roomName");
         mode = intent.getExtras().getString("mode");
+
+        if(mode.equals("타이머")){ //에러고치기 - 은서
+            timer = intent.getExtras().getString("timer");
+
+            fab.setImageResource(R.drawable.clock);
+        }
+        fab.setOnClickListener(floatingBtnClick);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         groupRef = mDatabase.child("groups").child(code);
@@ -115,6 +117,7 @@ public class RoomActivity extends AppCompatActivity {
         roomPwdView.getPaint().setShader(textShader);
 
         findViewById(R.id.floatingBtn).setOnClickListener(floatingBtnClick);
+
 
         memberRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -244,6 +247,7 @@ public class RoomActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 memberList.put(dataSnapshot.getKey(), dataSnapshot.getValue());
+                System.out.println(memberList);
                 myCallback.onCallback(memberList);
             }
 
@@ -279,24 +283,6 @@ public class RoomActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        });
-    }
-
-    public void selectData(final RoomActivity.MyCallback myCallback) {
-        groupRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot ds: dataSnapshot.getChildren()) {
-                    if(code.equals(ds.getKey())) {
-                        memberList = (Map<String, Object>) ((HashMap<String, Object>) ds.getValue()).get("member");
-                        Log.d("memberMap ", memberList.toString());
-                    }
-                }
-                myCallback.onCallback(memberList);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
         });
     }
 
