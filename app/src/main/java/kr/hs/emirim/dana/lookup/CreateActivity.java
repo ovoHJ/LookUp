@@ -163,12 +163,18 @@ public class CreateActivity extends AppCompatActivity {
                 owner = leader_name.getText().toString();
 
                 if (mode.equals("타이머")){
+                    if(hour_input.getText().toString().equals("")){
+                        hour_input.setText("0");
+                    }
+                    if(minute_input.getText().toString().equals("")){
+                        minute_input.setText("0");
+                    }
                     timer = addZero(hour_input.getText().toString()) + " : " + addZero(minute_input.getText().toString());
                 } else if(mode.equals("사용자 지정")){
                     timer = "";
                 }
 
-                if (!(name.equals("")) && !(owner.equals(""))) {
+                if (!(name.equals("")) && !(owner.equals("")) && (!(hour_input.getText().toString().equals(""))) && (!(minute_input.getText().toString().equals("")))) {
                     newGroupPost();
                     Intent intent = new Intent(CreateActivity.this, RoomActivity.class);
                     intent.putExtra("code", code);
