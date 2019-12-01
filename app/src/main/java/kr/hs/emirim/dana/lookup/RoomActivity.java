@@ -288,9 +288,4 @@ public class RoomActivity extends AppCompatActivity {
         roomCntView.setText(rAdapter.getCount()+"명");
 
     }
-
-    public interface MyCallback {
-        void onCallback(Map<String, Object> memberList);
-    }
-
 }
