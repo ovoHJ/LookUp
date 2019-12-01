@@ -18,9 +18,11 @@ import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.text.TextPaint;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
@@ -68,6 +70,7 @@ public class RoomActivity extends AppCompatActivity {
 
     String mode;
     String timer;
+    int totalTime;
     int master;
     FloatingActionButton fab;
     Map<String, Object> memberList;
@@ -126,7 +129,35 @@ public class RoomActivity extends AppCompatActivity {
         roomNameView.setText(roomName);
 
         if(mode.equals("타이머")){
-            timer = intent.getExtras().getString("timer");
+            String t = intent.getExtras().getString("timer");
+            int hour = Integer.parseInt(t.substring(0, 1+1));
+            int min = Integer.parseInt(t.substring(t.length()-2));
+            totalTime = hour * 3600 + min * 60;
+            //timer = minute;
+
+            final CountDownTimer timers = new CountDownTimer(totalTime*1000, 1000) {
+                @Override
+                public void onFinish() {
+                    timer = "종료";
+                    outOfRoom();
+                }
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    totalTime -= 1;
+
+                    int h = totalTime / 3600;
+                    int m = (totalTime%3600) / 60;
+                    int s = ((totalTime%3600) % 60) / 60;
+
+                    if (totalTime >= 60) {
+                        timer = Integer.toString(h) + "시간 " + Integer.toString(m) + "분 " + Integer.toString(s) + "초";
+                    }
+                    else if(totalTime < 60) {
+                        timer = "1분 미만";
+                    }
+                }
+            };
+            timers.start();
             fab.setImageResource(R.drawable.clock);
         }
         fab.setOnClickListener(floatingBtnClick);
@@ -287,5 +318,18 @@ public class RoomActivity extends AppCompatActivity {
         roomCntView = (TextView) findViewById(R.id.connectionCount);
         roomCntView.setText(rAdapter.getCount()+"명");
 
+    }
+  
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {     // Back키 막음
+        switch(keyCode) {
+            case KeyEvent.KEYCODE_BACK :
+                Log.e("MyMy", "Back Key Pressed");
+                return true;
+            case KeyEvent.KEYCODE_MENU :
+                Log.e("MyMy", "Menu Key Pressed");
+                return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
