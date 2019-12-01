@@ -32,9 +32,9 @@ public class CreateActivity extends AppCompatActivity {
     TextView random_number;
     EditText room_name;
     EditText leader_name;
-    Button hour_input;
+    EditText hour_input;
     TextView hour;
-    Button minute_input;
+    EditText minute_input;
     TextView minute;
     Button create_bt;
     Spinner spinner;
@@ -50,6 +50,7 @@ public class CreateActivity extends AppCompatActivity {
     int personnel = 0;
     String timer;
     String owner;
+    int master = 1;
     Map<String, String> member = new HashMap();
 
     int min = 100000;
@@ -70,10 +71,48 @@ public class CreateActivity extends AppCompatActivity {
         room_name = (EditText)findViewById(R.id.room_name);
         leader_name = (EditText)findViewById(R.id.leader_name);
 
-        hour_input = (Button)findViewById(R.id.hour_input);
+        hour_input = (EditText)findViewById(R.id.hour_input);
         hour = (TextView)findViewById(R.id.hour);
-        minute_input = (Button)findViewById(R.id.minute_input);
+        minute_input = (EditText)findViewById(R.id.minute_input);
         minute = (TextView)findViewById(R.id.minute);
+
+        hour_input.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+
+                mTimePicker = new TimePickerDialog(CreateActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        hour_input.setText(selectedHour);
+                    }
+                }, hour, minute, false); // true의 경우 24시간 형식의 TimePicker
+                // mTimePicker.setTitle("Select Time");
+                mTimePicker.show();
+            }
+        });
+
+        minute_input.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar mcurrentTime = Calendar.getInstance();
+                int hour = mcurrentTime.get(Calendar.HOUR_OF_DAY);
+                int minute = mcurrentTime.get(Calendar.MINUTE);
+                TimePickerDialog mTimePicker;
+
+                mTimePicker = new TimePickerDialog(CreateActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
+                        minute_input.setText(selectedMinute);
+                    }
+                }, hour, minute, false); // true의 경우 24시간 형식의 TimePicker
+                // mTimePicker.setTitle("Select Minute");
+                mTimePicker.show();
+            }
+        });
 
         spinner = (Spinner)findViewById(R.id.spinner);
         adapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
@@ -136,7 +175,8 @@ public class CreateActivity extends AppCompatActivity {
                     intent.putExtra("name", owner);
                     intent.putExtra("roomName", name);
                     intent.putExtra("mode", mode);
-                    if(mode.equals("타이머")){
+                    intent.putExtra("master", master);
+                    if(mode.equals("타이머")) {
                         intent.putExtra("timer", timer);
                     }
                     startActivity(intent);

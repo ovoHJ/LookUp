@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LookUp</string>
+    <string name="app_name">Look Up</string>
     <string name="create_room">방 생성</string>
     <string name="enter_room">방 접속</string>
     <string name="connection_people">현재 접속 인원</string>

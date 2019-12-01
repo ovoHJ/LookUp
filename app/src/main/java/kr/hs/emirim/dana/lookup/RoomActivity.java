@@ -27,6 +27,7 @@ import android.view.WindowInsets;
 import android.widget.AdapterView;
 
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,6 +68,7 @@ public class RoomActivity extends AppCompatActivity {
 
     String mode;
     String timer;
+    int master;
     FloatingActionButton fab;
     Map<String, Object> memberList;
 
@@ -84,12 +86,18 @@ public class RoomActivity extends AppCompatActivity {
         name = intent.getExtras().getString("name");
         roomName = intent.getExtras().getString("roomName");
         mode = intent.getExtras().getString("mode");
+        master = intent.getExtras().getInt("master");
+
+        if(master == 0 && mode.equals("사용자 지정")){
+            findViewById(R.id.floatingBtn).setVisibility(View.INVISIBLE);
+        }
 
         if(mode.equals("타이머")){
             timer = intent.getExtras().getString("timer");
 
             fab.setImageResource(R.drawable.clock);
         }
+
         fab.setOnClickListener(floatingBtnClick);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -102,6 +110,11 @@ public class RoomActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 choice = (String)namedata.get(i);
                 if(name.equals(choice)){
+                    if(master == 1)
+                        view.findViewById(R.id.statusCircle).setBackgroundResource(R.drawable.draw_circle_leader); //여기말고 처음 어댑터 적용할 때부터
+                    else
+                        view.findViewById(R.id.statusCircle).setBackgroundResource(R.drawable.draw_circle_me); //여기말고 처음 어댑터 적용할 때부터
+
                     showDialog();
                 }
             }
@@ -112,11 +125,8 @@ public class RoomActivity extends AppCompatActivity {
         roomNameView = (TextView) findViewById(R.id.roomName);
         roomNameView.setText(roomName);
 
-        fab = (FloatingActionButton)findViewById(R.id.floatingBtn);
-
-
         if(mode.equals("타이머")){
-            timer = intent.getExtras().getString("timer"); //EnterActivity에서 넘어갔을 경우 timer 받을 수 없음
+            timer = intent.getExtras().getString("timer");
             fab.setImageResource(R.drawable.clock);
         }
         fab.setOnClickListener(floatingBtnClick);
@@ -130,8 +140,6 @@ public class RoomActivity extends AppCompatActivity {
                         Color.parseColor("#00CDC1"),
                 }, null, Shader.TileMode.CLAMP);
         roomPwdView.getPaint().setShader(textShader);
-
-        findViewById(R.id.floatingBtn).setOnClickListener(floatingBtnClick);
 
 
         memberRef.addChildEventListener(new ChildEventListener() {
@@ -211,14 +219,16 @@ public class RoomActivity extends AppCompatActivity {
 
     public void showDialog(){
         builder = new AlertDialog.Builder(RoomActivity.this, R.style.customDialog);
-        builder.setTitle("방을 나가시겠습니까?");
+        if(master == 1)
+            builder.setTitle("방을 없애시겠습니까?");
+        else
+            builder.setTitle("방을 나가시겠습니까?");
 
         builder.setPositiveButton(" ", new DialogInterface.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 outOfRoom();
-
             }
         });
 
@@ -233,13 +243,18 @@ public class RoomActivity extends AppCompatActivity {
 
         Button yes = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
         Drawable img1 = ContextCompat.getDrawable(RoomActivity.this,R.drawable.yes);
-        img1.setBounds(0, 0, 70, 70);
+        img1.setBounds(70, 0, 140, 70);
         yes.setCompoundDrawables(img1, null, null, null);
 
         Button no = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
         Drawable img2 = ContextCompat.getDrawable(RoomActivity.this,R.drawable.exit);
-        img2.setBounds(0, 0, 70, 70);
+        img2.setBounds(70, 0, 140, 70);
         no.setCompoundDrawables(img2, null, null, null);
+
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) yes.getLayoutParams();
+        layoutParams.weight = 10;
+        yes.setLayoutParams(layoutParams);
+        no.setLayoutParams(layoutParams);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -271,7 +286,6 @@ public class RoomActivity extends AppCompatActivity {
 
         roomCntView = (TextView) findViewById(R.id.connectionCount);
         roomCntView.setText(rAdapter.getCount()+"명");
-
 
     }
 

@@ -33,6 +33,7 @@ public class EnterActivity extends AppCompatActivity {
     String roomName;
     String name;
     String mode;
+    int master = 0;
     Map<String, Object> addMember = new HashMap<>();
     ArrayList<String> keyValue = new ArrayList<>();
     Map<String, Object> memberMap;
@@ -75,6 +76,7 @@ public class EnterActivity extends AppCompatActivity {
                                 intent.putExtra("roomName", roomName);
                                 intent.putExtra("timer", timer);
                                 intent.putExtra("mode", mode);
+                                intent.putExtra("master", master);
                                 startActivity(intent);
                             } else {
                                 input_name.setText("");
