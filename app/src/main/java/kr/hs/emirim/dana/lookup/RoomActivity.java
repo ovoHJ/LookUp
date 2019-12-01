@@ -67,7 +67,7 @@ public class RoomActivity extends AppCompatActivity {
     String mode;
     String timer;
     FloatingActionButton fab;
-    Map<String, Object> memberList = new HashMap<>();
+    Map<String, Object> memberList;
 
     ArrayList<String> namedata;
 
@@ -77,6 +77,7 @@ public class RoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
         fab = (FloatingActionButton)findViewById(R.id.floatingBtn);
+        memberList = new HashMap<>();
 
         Intent intent = getIntent();
         code = intent.getExtras().getString("code");
@@ -160,7 +161,6 @@ public class RoomActivity extends AppCompatActivity {
                 memberList.remove(dataSnapshot.getKey(), dataSnapshot.getValue());
 
                 for (String key: memberList.keySet()) {
-                    System.out.println(key);
                     namedata.add(key);
                 }
 
@@ -281,7 +281,6 @@ public class RoomActivity extends AppCompatActivity {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 memberList.put(dataSnapshot.getKey(), dataSnapshot.getValue());
-                System.out.println(memberList);
                 myCallback.onCallback(memberList);
             }
 
