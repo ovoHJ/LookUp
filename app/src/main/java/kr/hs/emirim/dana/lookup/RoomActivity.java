@@ -27,6 +27,7 @@ import android.view.WindowInsets;
 import android.widget.AdapterView;
 
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -242,13 +243,18 @@ public class RoomActivity extends AppCompatActivity {
 
         Button yes = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
         Drawable img1 = ContextCompat.getDrawable(RoomActivity.this,R.drawable.yes);
-        img1.setBounds(0, 0, 70, 70);
+        img1.setBounds(70, 0, 140, 70);
         yes.setCompoundDrawables(img1, null, null, null);
 
         Button no = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
         Drawable img2 = ContextCompat.getDrawable(RoomActivity.this,R.drawable.exit);
-        img2.setBounds(0, 0, 70, 70);
+        img2.setBounds(70, 0, 140, 70);
         no.setCompoundDrawables(img2, null, null, null);
+
+        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) yes.getLayoutParams();
+        layoutParams.weight = 10;
+        yes.setLayoutParams(layoutParams);
+        no.setLayoutParams(layoutParams);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
@@ -280,7 +286,6 @@ public class RoomActivity extends AppCompatActivity {
 
         roomCntView = (TextView) findViewById(R.id.connectionCount);
         roomCntView.setText(rAdapter.getCount()+"명");
-
 
     }
 
