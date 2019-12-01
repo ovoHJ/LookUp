@@ -101,8 +101,6 @@ public class EnterActivity extends AppCompatActivity {
                     if(code.equals(ds.getKey())) {
                         timer = ((Map<String, Object>)ds.getValue()).get("timer").toString();
                         roomName = ((Map<String, Object>)ds.getValue()).get("name").toString();
-                        System.out.println("timer : " + timer);
-                        System.out.println("roomName : " + roomName);
                         if(timer.equals("")) {
                             mode = "사용자 지정";
                         } else {

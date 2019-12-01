@@ -2,6 +2,7 @@ package kr.hs.emirim.dana.lookup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -15,6 +16,7 @@ import android.graphics.Shader;
 
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextPaint;
 import android.util.Log;
@@ -39,6 +41,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -65,7 +68,9 @@ public class RoomActivity extends AppCompatActivity {
     String timer;
     FloatingActionButton fab;
     Map<String, Object> memberList = new HashMap<>();
-    ArrayList<String> namedata = new ArrayList<>();
+
+    ArrayList<String> namedata;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,10 +96,29 @@ public class RoomActivity extends AppCompatActivity {
         memberRef = groupRef.child("member");
         rListView = (ListView)findViewById(R.id.nameList);
 
+        rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                choice = (String)namedata.get(i);
+                if(name.equals(choice)){
+                    showDialog();
+                }
+            }
+        });
+
         roomPwdView = (TextView) findViewById(R.id.roomPwd);
         roomPwdView.setText(code);
         roomNameView = (TextView) findViewById(R.id.roomName);
         roomNameView.setText(roomName);
+
+        fab = (FloatingActionButton)findViewById(R.id.floatingBtn);
+
+
+        if(mode.equals("타이머")){
+            timer = intent.getExtras().getString("timer"); //EnterActivity에서 넘어갔을 경우 timer 받을 수 없음
+            fab.setImageResource(R.drawable.clock);
+        }
+        fab.setOnClickListener(floatingBtnClick);
 
         TextPaint paint = roomPwdView.getPaint();
         float width = paint.measureText(code);
@@ -112,45 +136,15 @@ public class RoomActivity extends AppCompatActivity {
         memberRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                showList(new RoomActivity.MyCallback() {
-                    @Override
-                    public void onCallback(Map<String, Object> List) {
-                        final ArrayList<String> namedata = new ArrayList<>();
-                        memberList = (Map<String, Object>)List;
-                        for (String key: memberList.keySet()) {
-                            namedata.add(key);
-                            if(key.equals(name)){
-                                own = memberList.get(key).toString();
-                            }
-                        }
-                        System.out.println("namedata : " + namedata);
-                        int nDatCnt = 0;
-                        final ArrayList<ItemData> dnameData = new ArrayList<>();
-
-                        for (int i=0; i< namedata.size(); i++){
-                            ItemData nameItem = new ItemData();
-                            nameItem.nameList = namedata.get(i);
-                            dnameData.add(nameItem);
-                        }
-
-                        final ListAdapter rAdapter = new ListAdapter(dnameData);
-                        rListView.setAdapter(rAdapter);
-
-                        roomCntView = (TextView) findViewById(R.id.connectionCount);
-                        roomCntView.setText(rAdapter.getCount()+"명");
-
-                        rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                choice = (String)namedata.get(i);
-                                if(name.equals(choice)){
-                                    view.findViewById(R.id.statusCircle).setBackgroundResource(R.drawable.draw_circle_me); //여기말고 처음 어댑터 적용할 때부터
-                                    showDialog();
-                                }
-                            }
-                        });
+                memberList.put(dataSnapshot.getKey(), dataSnapshot.getValue());
+                namedata = new ArrayList<>();
+                for (String key: memberList.keySet()) {
+                    namedata.add(key);
+                    if(key.equals(name)){
+                        own = memberList.get(key).toString();
                     }
-                });
+                }
+                showListView();
             }
 
             @Override
@@ -158,53 +152,27 @@ public class RoomActivity extends AppCompatActivity {
 
             }
 
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                memberList.put(dataSnapshot.getKey(), dataSnapshot.getValue());
-                Log.d("memberList", memberList.toString());
+                namedata = new ArrayList<>();
 
-                if(!(memberList.containsValue("owner"))){
+                memberList.remove(dataSnapshot.getKey(), dataSnapshot.getValue());
+
+                for (String key: memberList.keySet()) {
+                    System.out.println(key);
+                    namedata.add(key);
+                }
+
+                if(!(memberList.containsValue("owner")) && !(memberList.toString().equals("{}"))){
                     Intent intent = new Intent(RoomActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 액티비티 스택에 쌓인 액티비티 제거
                     intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); //
                     startActivity(intent);
                     finish();
                 }
-                final ArrayList<String> namedata = new ArrayList<>();
-                for (String key: memberList.keySet()) {
-                    Log.d("key", key);
-                    if(!key.equals(dataSnapshot.getKey())){
-                        namedata.add(key);
-                        System.out.println(namedata);
-                        if(key.equals(name)){
-                            own = memberList.get(key).toString();
-                        }
-                    }
-                }
-                int nDatCnt = 0;
-                final ArrayList<ItemData> dnameData = new ArrayList<>();
 
-                for (int i=0; i< namedata.size(); i++){
-                    ItemData nameItem = new ItemData();
-                    nameItem.nameList = namedata.get(i);
-                    dnameData.add(nameItem);
-                }
-
-                final ListAdapter rAdapter = new ListAdapter(dnameData);
-                rListView.setAdapter(rAdapter);
-
-                roomCntView = (TextView) findViewById(R.id.connectionCount);
-                roomCntView.setText(rAdapter.getCount()+"명");
-
-                rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        choice = (String)namedata.get(i);
-                        if(name.equals(choice)){
-                            showDialog();
-                        }
-                    }
-                });
+                showListView();
             }
 
             @Override
@@ -247,9 +215,11 @@ public class RoomActivity extends AppCompatActivity {
         builder.setTitle("방을 나가시겠습니까?");
 
         builder.setPositiveButton(" ", new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 outOfRoom();
+
             }
         });
 
@@ -273,17 +243,37 @@ public class RoomActivity extends AppCompatActivity {
         no.setCompoundDrawables(img2, null, null, null);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     public void outOfRoom(){
         if(own.equals("owner")) {
             memberRef.getParent().removeValue();
         } else {
             memberRef.child(name).removeValue();
+            memberList = new HashMap<>();
         }
         Intent intent = new Intent(RoomActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 액티비티 스택에 쌓인 액티비티 제거
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); //
         startActivity(intent);
         finish();
+    }
+
+    public void showListView(){
+        final ArrayList<ItemData> dnameData = new ArrayList<>();
+
+        for (int i=0; i< namedata.size(); i++){
+            ItemData nameItem = new ItemData();
+            nameItem.nameList = namedata.get(i);
+            dnameData.add(nameItem);
+        }
+
+        final ListAdapter rAdapter = new ListAdapter(dnameData);
+        rListView.setAdapter(rAdapter);
+
+        roomCntView = (TextView) findViewById(R.id.connectionCount);
+        roomCntView.setText(rAdapter.getCount()+"명");
+
+
     }
 
     public void showList(final RoomActivity.MyCallback myCallback) {
@@ -302,8 +292,7 @@ public class RoomActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-                System.out.println("key : " + dataSnapshot.getKey());
-                System.out.println("value : " + dataSnapshot.getValue());
+
             }
 
             @Override
