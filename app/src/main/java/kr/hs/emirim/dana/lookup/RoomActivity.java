@@ -58,6 +58,7 @@ public class RoomActivity extends AppCompatActivity {
     DatabaseReference groupRef;
     DatabaseReference memberRef;
     AlertDialog.Builder builder;
+    ListAdapter rAdapter;
 
     String code;
     String name;
@@ -171,14 +172,13 @@ public class RoomActivity extends AppCompatActivity {
                     namedata.add(key);
                 }
 
-                if(!(memberList.containsValue("owner")) && !(memberList.toString().equals("{}"))){
+                if(!(memberList.containsValue("owner") && (!(memberList.toString().equals("{}"))) || rAdapter.getCount()==0)){
                     Intent intent = new Intent(RoomActivity.this, MainActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 액티비티 스택에 쌓인 액티비티 제거
                     intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); //
                     startActivity(intent);
                     finish();
                 }
-
                 showListView();
             }
 
@@ -281,46 +281,11 @@ public class RoomActivity extends AppCompatActivity {
             dnameData.add(nameItem);
         }
 
-        final ListAdapter rAdapter = new ListAdapter(dnameData);
+        rAdapter = new ListAdapter(dnameData);
         rListView.setAdapter(rAdapter);
 
         roomCntView = (TextView) findViewById(R.id.connectionCount);
         roomCntView.setText(rAdapter.getCount()+"명");
 
     }
-
-    public void showList(final RoomActivity.MyCallback myCallback) {
-        memberRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                memberList.put(dataSnapshot.getKey(), dataSnapshot.getValue());
-                myCallback.onCallback(memberList);
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-    public interface MyCallback {
-        void onCallback(Map<String, Object> memberList);
-    }
-
 }
