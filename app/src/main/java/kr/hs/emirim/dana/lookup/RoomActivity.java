@@ -66,11 +66,11 @@ public class RoomActivity extends AppCompatActivity {
 
     String mode;
     String timer;
+    int master;
     FloatingActionButton fab;
     Map<String, Object> memberList = new HashMap<>();
 
     ArrayList<String> namedata;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,12 +83,18 @@ public class RoomActivity extends AppCompatActivity {
         name = intent.getExtras().getString("name");
         roomName = intent.getExtras().getString("roomName");
         mode = intent.getExtras().getString("mode");
+        master = intent.getExtras().getInt("master");
+
+        if(master == 0 && mode.equals("사용자 지정")){
+            findViewById(R.id.floatingBtn).setVisibility(View.INVISIBLE);
+        }
 
         if(mode.equals("타이머")){
             timer = intent.getExtras().getString("timer");
 
             fab.setImageResource(R.drawable.clock);
         }
+
         fab.setOnClickListener(floatingBtnClick);
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -111,11 +117,8 @@ public class RoomActivity extends AppCompatActivity {
         roomNameView = (TextView) findViewById(R.id.roomName);
         roomNameView.setText(roomName);
 
-        fab = (FloatingActionButton)findViewById(R.id.floatingBtn);
-
-
         if(mode.equals("타이머")){
-            timer = intent.getExtras().getString("timer"); //EnterActivity에서 넘어갔을 경우 timer 받을 수 없음
+            timer = intent.getExtras().getString("timer");
             fab.setImageResource(R.drawable.clock);
         }
         fab.setOnClickListener(floatingBtnClick);
@@ -129,8 +132,6 @@ public class RoomActivity extends AppCompatActivity {
                         Color.parseColor("#00CDC1"),
                 }, null, Shader.TileMode.CLAMP);
         roomPwdView.getPaint().setShader(textShader);
-
-        findViewById(R.id.floatingBtn).setOnClickListener(floatingBtnClick);
 
 
         memberRef.addChildEventListener(new ChildEventListener() {
@@ -212,14 +213,16 @@ public class RoomActivity extends AppCompatActivity {
 
     public void showDialog(){
         builder = new AlertDialog.Builder(RoomActivity.this, R.style.customDialog);
-        builder.setTitle("방을 나가시겠습니까?");
+        if(master == 1)
+            builder.setTitle("방을 없애시겠습니까?");
+        else
+            builder.setTitle("방을 나가시겠습니까?");
 
         builder.setPositiveButton(" ", new DialogInterface.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 outOfRoom();
-
             }
         });
 

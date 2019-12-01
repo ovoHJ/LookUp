@@ -50,6 +50,7 @@ public class CreateActivity extends AppCompatActivity {
     int personnel = 0;
     String timer;
     String owner;
+    int master = 1;
     Map<String, String> member = new HashMap();
 
     int min = 100000;
@@ -174,7 +175,8 @@ public class CreateActivity extends AppCompatActivity {
                     intent.putExtra("name", owner);
                     intent.putExtra("roomName", name);
                     intent.putExtra("mode", mode);
-                    if(mode.equals("타이머")){
+                    intent.putExtra("master", master);
+                    if(mode.equals("타이머")) {
                         intent.putExtra("timer", timer);
                     }
                     startActivity(intent);
