@@ -108,6 +108,11 @@ public class RoomActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 choice = (String)namedata.get(i);
                 if(name.equals(choice)){
+                    if(master == 1)
+                        view.findViewById(R.id.statusCircle).setBackgroundResource(R.drawable.draw_circle_leader); //여기말고 처음 어댑터 적용할 때부터
+                    else
+                        view.findViewById(R.id.statusCircle).setBackgroundResource(R.drawable.draw_circle_me); //여기말고 처음 어댑터 적용할 때부터
+
                     showDialog();
                 }
             }
