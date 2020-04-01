@@ -40,7 +40,7 @@
         android:background="@drawable/bg_roomview"
         android:fontFamily="@font/roboto_bold"
         android:gravity="center"
-        android:text="스"
+        android:text=""
         android:textColor="#797979"
         android:textSize="20sp"
         android:textStyle="bold"

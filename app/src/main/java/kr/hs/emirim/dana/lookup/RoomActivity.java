@@ -53,6 +53,7 @@ public class RoomActivity extends AppCompatActivity {
     private ListView rListView;
     List<ItemData> rArray = new ArrayList<ItemData>();
     TextView roomNameView;
+    TextView roomView;
     TextView roomPwdView;
     TextView roomCntView;
 
@@ -110,13 +111,11 @@ public class RoomActivity extends AppCompatActivity {
 
         rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {  //여기말고 처음 어댑터 적용할 때부터 - 수정 필요
                 choice = (String)namedata.get(i);
-                if(name.equals(choice)){
-                    if(master == 1)
-                        view.findViewById(R.id.statusCircle).setBackgroundResource(R.drawable.draw_circle_leader); //여기말고 처음 어댑터 적용할 때부터
-                    else
-                        view.findViewById(R.id.statusCircle).setBackgroundResource(R.drawable.draw_circle_me); //여기말고 처음 어댑터 적용할 때부터
+                if(name.equals(choice)) {
+                    if(master !=1)
+                        view.findViewById(R.id.statusCircle).setBackgroundResource(R.drawable.draw_circle_me);
 
                     showDialog();
                 }
@@ -127,10 +126,15 @@ public class RoomActivity extends AppCompatActivity {
         roomPwdView.setText(code);
         roomNameView = (TextView) findViewById(R.id.roomName);
         roomNameView.setText(roomName);
+        roomView = (TextView)findViewById(R.id.roomView);
+        roomView.setText(roomName.substring(0,1));
 
         if(mode.equals("타이머")){
             String t = intent.getExtras().getString("timer");
-            int hour = Integer.parseInt(t.substring(0, 1+1));
+            if(t.equals("")){
+                t = "종료 시간 / 00 : 00";
+            }
+            int hour = Integer.parseInt(t.substring(8, 9+1));
             int min = Integer.parseInt(t.substring(t.length()-2));
             totalTime = hour * 3600 + min * 60;
             //timer = minute;
@@ -146,8 +150,8 @@ public class RoomActivity extends AppCompatActivity {
                     totalTime -= 1;
 
                     int h = totalTime / 3600;
-                    int m = (totalTime%3600) / 60;
-                    int s = ((totalTime%3600) % 60) / 60;
+                    int m = (totalTime % 3600) / 60;
+                    int s = ((totalTime % 3600) % 60) / 60;
 
                     if (totalTime >= 60) {
                         timer = Integer.toString(h) + "시간 " + Integer.toString(m) + "분 " + Integer.toString(s) + "초";
@@ -181,7 +185,8 @@ public class RoomActivity extends AppCompatActivity {
                 for (String key: memberList.keySet()) {
                     namedata.add(key);
                     if(key.equals(name)){
-                        own = memberList.get(key).toString();
+                        if(memberList.get(key) != null)
+                            own = memberList.get(key).toString();
                     }
                 }
                 showListView();
