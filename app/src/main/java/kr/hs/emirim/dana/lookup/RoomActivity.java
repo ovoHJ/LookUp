@@ -7,6 +7,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,8 +44,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,7 +84,7 @@ public class RoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
         fab = (FloatingActionButton)findViewById(R.id.floatingBtn);
-        memberList = new HashMap<>();
+        memberList = new LinkedHashMap<>();
 
         Intent intent = getIntent();
         code = intent.getExtras().getString("code");
@@ -111,13 +112,17 @@ public class RoomActivity extends AppCompatActivity {
 
         rListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {  //여기말고 처음 어댑터 적용할 때부터 - 수정 필요
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 choice = (String)namedata.get(i);
-                if(name.equals(choice)) {
-                    if(master !=1)
+                if(master == 1){
+                    if(!name.equals(choice))
+                        exitDialog();
+                    else
+                        showDialog();
+                }
+                else {
+                    if(name.equals(choice))
                         view.findViewById(R.id.statusCircle).setBackgroundResource(R.drawable.draw_circle_me);
-
-                    showDialog();
                 }
             }
         });
@@ -182,7 +187,7 @@ public class RoomActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 memberList.put(dataSnapshot.getKey(), dataSnapshot.getValue());
                 namedata = new ArrayList<>();
-                for (String key: memberList.keySet()) {
+                for(String key: memberList.keySet()) {
                     namedata.add(key);
                     if(key.equals(name)){
                         if(memberList.get(key) != null)
@@ -193,9 +198,7 @@ public class RoomActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
 
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -208,25 +211,21 @@ public class RoomActivity extends AppCompatActivity {
                     namedata.add(key);
                 }
 
+                if((master != 1) && memberList.containsValue("owner") && !(memberList.containsValue(memberRef.child(name).getKey()))){
+                    initActivity();
+                }
+
                 if(!(memberList.containsValue("owner") && (!(memberList.toString().equals("{}"))) || rAdapter.getCount()==0)){
-                    Intent intent = new Intent(RoomActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 액티비티 스택에 쌓인 액티비티 제거
-                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); //
-                    startActivity(intent);
-                    finish();
+                    initActivity();
                 }
                 showListView();
             }
 
             @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
     }
 
@@ -268,6 +267,25 @@ public class RoomActivity extends AppCompatActivity {
             }
         });
 
+        builderSetting();
+    }
+
+    public void exitDialog(){
+        builder = new AlertDialog.Builder(RoomActivity.this, R.style.customDialog);
+        builder.setTitle("선택한 팀원 내보내기");
+
+        builder.setPositiveButton(" ", new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                exitOfRoom(choice);
+            }
+        });
+
+        builderSetting();
+    }
+
+    public void builderSetting(){
         builder.setNegativeButton(" ", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) { }
@@ -299,8 +317,17 @@ public class RoomActivity extends AppCompatActivity {
             memberRef.getParent().removeValue();
         } else {
             memberRef.child(name).removeValue();
-            memberList = new HashMap<>();
+            memberList = new LinkedHashMap<>();
         }
+        initActivity();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void exitOfRoom(String name){
+        memberRef.child(name).removeValue();
+    }
+
+    public void initActivity(){
         Intent intent = new Intent(RoomActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 액티비티 스택에 쌓인 액티비티 제거
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); //
@@ -308,6 +335,7 @@ public class RoomActivity extends AppCompatActivity {
         finish();
     }
 
+    @SuppressLint("SetTextI18n") //하드코딩 된 스트링 사용 때문에 추가
     public void showListView(){
         final ArrayList<ItemData> dnameData = new ArrayList<>();
 

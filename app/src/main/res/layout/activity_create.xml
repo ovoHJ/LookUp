@@ -103,7 +103,7 @@
         android:layout_marginEnd="24dp"
         android:fontFamily="@font/roboto_bold"
         android:gravity="center"
-        android:text="시"
+        android:text="시간"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
         android:textStyle="bold"
