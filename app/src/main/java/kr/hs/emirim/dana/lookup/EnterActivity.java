@@ -67,30 +67,30 @@ public class EnterActivity extends AppCompatActivity {
             selectData(new MyCallback() {
                 @Override
                 public void onCallback(ArrayList<String> keyValue, Map<String, Object> memberValue, String roomName) { ;
-                        if (keyValue.contains(code) && !(code.equals(""))) {
-                            if(!(memberValue.containsKey(name)) && !(name.equals(""))){
-                                enterRoom();
-                                Intent intent = new Intent(EnterActivity.this, RoomActivity.class);
-                                intent.putExtra("code", code);
-                                intent.putExtra("name", name);
-                                intent.putExtra("roomName", roomName);
-                                intent.putExtra("timer", timer);
-                                intent.putExtra("mode", mode);
-                                intent.putExtra("master", master);
-                                startActivity(intent);
-                            } else {
-                                input_name.setText("");
-                                if(name.equals("")){
-                                    input_name.setHint("닉네임을 입력하세요");
-                                } else {
-                                    input_name.setHint("존재하는 닉네임입니다.");
-                                }
-                            }
+                    if (keyValue.contains(code) && !(code.equals(""))) {
+                        if(!(memberValue.containsKey(name)) && !(name.equals(""))){
+                            enterRoom();
+                            Intent intent = new Intent(EnterActivity.this, RoomActivity.class);
+                            intent.putExtra("code", code);
+                            intent.putExtra("name", name);
+                            intent.putExtra("roomName", roomName);
+                            intent.putExtra("timer", timer);
+                            intent.putExtra("mode", mode);
+                            intent.putExtra("master", master);
+                            startActivity(intent);
                         } else {
-                            input_code.setText("");
-                            input_code.setHint("올바른 코드를 입력하세요");
+                            input_name.setText("");
+                            if(name.equals("")){
+                                input_name.setHint("닉네임을 입력하세요");
+                            } else {
+                                input_name.setHint("존재하는 닉네임입니다.");
+                            }
                         }
+                    } else {
+                        input_code.setText("");
+                        input_code.setHint("올바른 코드를 입력하세요");
                     }
+                }
             });
         }
     };
@@ -124,5 +124,4 @@ public class EnterActivity extends AppCompatActivity {
         void onCallback(ArrayList<String> keyValue, Map<String, Object> memberValue, String roomName);
     }
 }
-
 

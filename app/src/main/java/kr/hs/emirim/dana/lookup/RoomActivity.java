@@ -352,7 +352,7 @@ public class RoomActivity extends AppCompatActivity {
         roomCntView.setText(rAdapter.getCount()+"명");
 
     }
-  
+
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {     // Back키 막음
         switch(keyCode) {

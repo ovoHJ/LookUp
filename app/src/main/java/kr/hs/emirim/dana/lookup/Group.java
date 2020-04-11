@@ -28,7 +28,7 @@ public class Group {
         this.member.put(this.owner, "owner");
 
         System.out.println(name + " " + timer + " " + member);
-}
+    }
 
     @Exclude
     public Map<String, Object> toMap() {
