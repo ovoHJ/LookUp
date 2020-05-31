@@ -9,6 +9,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -18,6 +19,8 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+
+
 
         findViewById(R.id.m_crBtn).setOnClickListener(m_crBtnClick);
         findViewById(R.id.m_erBtn).setOnClickListener(m_erBtnClick);
@@ -39,5 +42,15 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    private long time= 0;
+    @Override
+    public void onBackPressed(){
+        if(System.currentTimeMillis()-time>=2000){
+            time=System.currentTimeMillis();
+            Toast.makeText(getApplicationContext(),"뒤로 버튼을 한번 더 누르면 종료합니다.", Toast.LENGTH_SHORT).show();
+        }else if(System.currentTimeMillis()-time<2000){
+            finish();
+        }
+    }
 
 }

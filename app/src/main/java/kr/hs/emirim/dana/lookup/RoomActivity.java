@@ -89,7 +89,14 @@ public class RoomActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_room);
 
-
+        View decorView = getWindow().getDecorView();
+        // Hide both the navigation bar and the status bar.
+        // SYSTEM_UI_FLAG_FULLSCREEN is only available on Android 4.1 and higher, but as
+        // a general rule, you should design your app to hide the status bar whenever you
+        // hide the navigation bar.
+        int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
 
         fab = (FloatingActionButton) findViewById(R.id.floatingBtn);
         memberList = new LinkedHashMap<>();
@@ -162,9 +169,14 @@ public class RoomActivity extends AppCompatActivity {
                 public void onTick(long millisUntilFinished) {
                     totalTime -= 1;
 
-                    int h = totalTime / 3600;
-                    int m = (totalTime % 3600) / 60;
-                    int s = ((totalTime % 3600) % 60) / 60;
+//                    int h = totalTime / 3600;
+//                    int m = (totalTime % 3600) / 60;
+//                    int s = ((totalTime % 3600) % 60) / 60;
+
+                    int h, m, s;
+                    m = totalTime/60;
+                    h = m/60;
+                    s = totalTime%60;
 
                     if (totalTime >= 60) {
                         timer = Integer.toString(h) + "시간 " + Integer.toString(m) + "분 " + Integer.toString(s) + "초";
