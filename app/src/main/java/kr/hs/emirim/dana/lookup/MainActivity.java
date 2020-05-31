@@ -20,8 +20,6 @@ public class MainActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-
-
         findViewById(R.id.m_crBtn).setOnClickListener(m_crBtnClick);
         findViewById(R.id.m_erBtn).setOnClickListener(m_erBtnClick);
     }
@@ -52,5 +50,7 @@ public class MainActivity extends AppCompatActivity {
             finish();
         }
     }
+
+
 
 }

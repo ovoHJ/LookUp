@@ -67,6 +67,9 @@ public class RoomActivity extends AppCompatActivity {
     AlertDialog.Builder builder;
     ListAdapter rAdapter;
 
+    private View decorView;
+    private int	uiOption;
+
     String code;
     String name;
     String own;
@@ -90,19 +93,14 @@ public class RoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_room);
 
         // 하단 소프트키 숨기기
-        int uiOptions = getWindow().getDecorView().getSystemUiVisibility();
-        int newUiOptions = uiOptions;
-        boolean isImmersiveModeEnabled = ((uiOptions | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY) == uiOptions);
-        if (isImmersiveModeEnabled) {
-            Log.i("Is on?", "Turning immersive mode mode off. ");
-        } else {
-            Log.i("Is on?", "Turning immersive mode mode on.");
-        }
-        // 몰입 모드를 꼭 적용해야 한다면 아래의 3가지 속성을 모두 적용시켜야 합니다
-        newUiOptions ^= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-        newUiOptions ^= View.SYSTEM_UI_FLAG_FULLSCREEN;
-        newUiOptions ^= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-        getWindow().getDecorView().setSystemUiVisibility(newUiOptions);
+        decorView = getWindow().getDecorView();
+        uiOption = getWindow().getDecorView().getSystemUiVisibility();
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH )
+            uiOption |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN )
+            uiOption |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+        if( Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT )
+            uiOption |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 
 
         fab = (FloatingActionButton) findViewById(R.id.floatingBtn);
@@ -382,6 +380,16 @@ public class RoomActivity extends AppCompatActivity {
         roomCntView = (TextView) findViewById(R.id.connectionCount);
         roomCntView.setText(rAdapter.getCount() + "명");
 
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        // TODO Auto-generated method stub
+        // super.onWindowFocusChanged(hasFocus);
+
+        if( hasFocus ) {
+            decorView.setSystemUiVisibility( uiOption );
+        }
     }
 
 
