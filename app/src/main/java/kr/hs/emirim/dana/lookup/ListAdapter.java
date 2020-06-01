@@ -26,12 +26,12 @@ public class ListAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position){
-        return null;
+        return nameData.get(position);
     }
 
     @Override
     public long getItemId(int position){
-        return 0;
+        return position;
     }
 
     @Override
@@ -41,7 +41,10 @@ public class ListAdapter extends BaseAdapter {
             if (inflater == null){
                 inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             }
-            convertView = inflater.inflate(R.layout.listview_item, parent, false);
+            if(position == 0)
+                convertView = inflater.inflate(R.layout.listview_item_master, parent, false);
+            else
+                convertView = inflater.inflate(R.layout.listview_item, parent, false);
         }
         TextView name = (TextView)convertView.findViewById(R.id.nameList);
         name.setText(nameData.get(position).nameList);

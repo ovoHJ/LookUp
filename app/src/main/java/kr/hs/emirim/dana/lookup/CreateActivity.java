@@ -21,6 +21,7 @@ import android.widget.TimePicker;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -169,7 +170,7 @@ public class CreateActivity extends AppCompatActivity {
                     if(minute_input.getText().toString().equals("")){
                         minute_input.setText("0");
                     }
-                    timer = addZero(hour_input.getText().toString()) + " : " + addZero(minute_input.getText().toString());
+                    timer = "종료 시간 / " + addZero(hour_input.getText().toString()) + " : " + addZero(minute_input.getText().toString());
                 } else if(mode.equals("사용자 지정")){
                     timer = "";
                 }
@@ -187,9 +188,9 @@ public class CreateActivity extends AppCompatActivity {
                     }
                     startActivity(intent);
                 } else {
-                    if ((name.equals(""))) {
+                    if (name.equals("")) {
                         room_name.setHint("방 이름을 입력하세요.");
-                    } else if ((owner.equals(""))) {
+                    } else if (owner.equals("")) {
                         leader_name.setHint("닉네임을 입력하세요.");
                     }
                 }

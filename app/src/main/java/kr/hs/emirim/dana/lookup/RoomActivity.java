@@ -7,6 +7,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -43,8 +44,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,6 +54,7 @@ public class RoomActivity extends AppCompatActivity {
     private ListView rListView;
     List<ItemData> rArray = new ArrayList<ItemData>();
     TextView roomNameView;
+    TextView roomView;
     TextView roomPwdView;
     TextView roomCntView;
 
@@ -82,7 +84,7 @@ public class RoomActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_room);
         fab = (FloatingActionButton)findViewById(R.id.floatingBtn);
-        memberList = new HashMap<>();
+        memberList = new LinkedHashMap<>();
 
         Intent intent = getIntent();
         code = intent.getExtras().getString("code");
@@ -141,13 +143,15 @@ public class RoomActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 choice = (String)namedata.get(i);
-                if(name.equals(choice)){
-                    if(master == 1)
-                        view.findViewById(R.id.statusCircle).setBackgroundResource(R.drawable.draw_circle_leader); //여기말고 처음 어댑터 적용할 때부터
+                if(master == 1){
+                    if(!name.equals(choice))
+                        exitDialog();
                     else
-                        view.findViewById(R.id.statusCircle).setBackgroundResource(R.drawable.draw_circle_me); //여기말고 처음 어댑터 적용할 때부터
-
-                    showDialog();
+                        showDialog();
+                }
+                else {
+                    if(name.equals(choice))
+                        view.findViewById(R.id.statusCircle).setBackgroundResource(R.drawable.draw_circle_me);
                 }
             }
         });
@@ -156,6 +160,45 @@ public class RoomActivity extends AppCompatActivity {
         roomPwdView.setText(code);
         roomNameView = (TextView) findViewById(R.id.roomName);
         roomNameView.setText(roomName);
+        roomView = (TextView)findViewById(R.id.roomView);
+        roomView.setText(roomName.substring(0,1));
+
+        if(mode.equals("타이머")){
+            String t = intent.getExtras().getString("timer");
+            if(t.equals("")){
+                t = "종료 시간 / 00 : 00";
+            }
+            int hour = Integer.parseInt(t.substring(8, 9+1));
+            int min = Integer.parseInt(t.substring(t.length()-2));
+            totalTime = hour * 3600 + min * 60;
+            //timer = minute;
+
+            final CountDownTimer timers = new CountDownTimer(totalTime*1000, 1000) {
+                @Override
+                public void onFinish() {
+                    timer = "종료";
+                    outOfRoom();
+                }
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    totalTime -= 1;
+
+                    int h = totalTime / 3600;
+                    int m = (totalTime % 3600) / 60;
+                    int s = ((totalTime % 3600) % 60) / 60;
+
+                    if (totalTime >= 60) {
+                        timer = Integer.toString(h) + "시간 " + Integer.toString(m) + "분 " + Integer.toString(s) + "초";
+                    }
+                    else if(totalTime < 60) {
+                        timer = "1분 미만";
+                    }
+                }
+            };
+            timers.start();
+            fab.setImageResource(R.drawable.clock);
+        }
+        fab.setOnClickListener(floatingBtnClick);
 
         TextPaint paint = roomPwdView.getPaint();
         float width = paint.measureText(code);
@@ -173,19 +216,18 @@ public class RoomActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 memberList.put(dataSnapshot.getKey(), dataSnapshot.getValue());
                 namedata = new ArrayList<>();
-                for (String key: memberList.keySet()) {
+                for(String key: memberList.keySet()) {
                     namedata.add(key);
                     if(key.equals(name)){
-                        own = memberList.get(key).toString();
+                        if(memberList.get(key) != null)
+                            own = memberList.get(key).toString();
                     }
                 }
                 showListView();
             }
 
             @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
 
             @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
@@ -198,25 +240,21 @@ public class RoomActivity extends AppCompatActivity {
                     namedata.add(key);
                 }
 
+                if((master != 1) && memberList.containsValue("owner") && !(memberList.containsValue(memberRef.child(name).getKey()))){
+                    initActivity();
+                }
+
                 if(!(memberList.containsValue("owner") && (!(memberList.toString().equals("{}"))) || rAdapter.getCount()==0)){
-                    Intent intent = new Intent(RoomActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 액티비티 스택에 쌓인 액티비티 제거
-                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); //
-                    startActivity(intent);
-                    finish();
+                    initActivity();
                 }
                 showListView();
             }
 
             @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) { }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
+            public void onCancelled(@NonNull DatabaseError databaseError) { }
         });
     }
 
@@ -258,6 +296,25 @@ public class RoomActivity extends AppCompatActivity {
             }
         });
 
+        builderSetting();
+    }
+
+    public void exitDialog(){
+        builder = new AlertDialog.Builder(RoomActivity.this, R.style.customDialog);
+        builder.setTitle("선택한 팀원 내보내기");
+
+        builder.setPositiveButton(" ", new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                exitOfRoom(choice);
+            }
+        });
+
+        builderSetting();
+    }
+
+    public void builderSetting(){
         builder.setNegativeButton(" ", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) { }
@@ -290,8 +347,17 @@ public class RoomActivity extends AppCompatActivity {
             memberRef.getParent().removeValue();
         } else {
             memberRef.child(name).removeValue();
-            memberList = new HashMap<>();
+            memberList = new LinkedHashMap<>();
         }
+        initActivity();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void exitOfRoom(String name){
+        memberRef.child(name).removeValue();
+    }
+
+    public void initActivity(){
         Intent intent = new Intent(RoomActivity.this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); // 액티비티 스택에 쌓인 액티비티 제거
         intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP); //
@@ -299,6 +365,7 @@ public class RoomActivity extends AppCompatActivity {
         finish();
     }
 
+    @SuppressLint("SetTextI18n") //하드코딩 된 스트링 사용 때문에 추가
     public void showListView(){
         final ArrayList<ItemData> dnameData = new ArrayList<>();
 
