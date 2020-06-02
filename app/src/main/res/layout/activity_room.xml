@@ -61,6 +61,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/roomView" />
 
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/chatBtn"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="@drawable/chat"
+        app:layout_constraintEnd_toStartOf="@+id/callBtn"
+        app:layout_constraintTop_toTopOf="@+id/roomPwd"
+        app:layout_constraintBottom_toBottomOf="@+id/roomPwd"
+        android:layout_marginEnd="12dp"/>
+
+    <androidx.appcompat.widget.AppCompatImageButton
+        android:id="@+id/callBtn"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:background="@drawable/call"
+        app:layout_constraintEnd_toEndOf="@+id/textView4"
+        app:layout_constraintTop_toTopOf="@+id/roomPwd"
+        app:layout_constraintBottom_toBottomOf="@+id/roomPwd"/>
+
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"

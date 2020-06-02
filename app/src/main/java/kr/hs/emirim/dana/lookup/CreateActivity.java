@@ -178,7 +178,7 @@ public class CreateActivity extends AppCompatActivity {
                     timer = "";
                 }
 
-                if (!(name.equals("")) && !(owner.equals(""))) {
+                if (!(name.equals("")) && !(owner.equals("")) && (!(hour_input.getText().toString().equals(""))) && (!(minute_input.getText().toString().equals("")))) {
                     newGroupPost();
                     Intent intent = new Intent(CreateActivity.this, RoomActivity.class);
                     intent.putExtra("code", code);

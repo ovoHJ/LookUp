@@ -119,9 +119,38 @@ public class RoomActivity extends AppCompatActivity {
 
         if (mode.equals("타이머")) {
             timer = intent.getExtras().getString("timer");
+            int hour = Integer.parseInt(timer.substring(0, 1+1));
+            int min = Integer.parseInt(timer.substring(timer.length()-2));
 
+            totalTime = hour * 3600 + min * 60;
+            //timer = minute;
+
+            final CountDownTimer timers = new CountDownTimer(totalTime*1000, 1000) {
+                @RequiresApi(api = Build.VERSION_CODES.N)
+                @Override
+                public void onFinish() {
+                    timer = "Time Over";
+                }
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    totalTime -= 1;
+
+                    int h = totalTime / 3600;
+                    int m = (totalTime%3600) / 60;
+                    int s = ((totalTime%3600) % 60) / 60;
+
+                    if (totalTime >= 60) {
+                        timer = Integer.toString(h) + "시간 " + Integer.toString(m) + "분 ";
+                    }
+                    else if(totalTime < 60) {
+                        timer = "1분 미만";
+                    }
+                }
+            };
+            timers.start();
             fab.setImageResource(R.drawable.clock);
         }
+        fab.setOnClickListener(floatingBtnClick);
 
         fab.setOnClickListener(floatingBtnClick);
 
@@ -341,8 +370,9 @@ public class RoomActivity extends AppCompatActivity {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
-    public void outOfRoom() {
-        if (own.equals("owner")) {
+    public void outOfRoom(){
+        System.out.println("own" + own);
+        if(own.equals("owner")) {
             memberRef.getParent().removeValue();
         } else {
             memberRef.child(name).removeValue();
